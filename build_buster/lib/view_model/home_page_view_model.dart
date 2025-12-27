@@ -143,6 +143,12 @@ class HomePageState {
     0,
     (sum, project) => sum + project.sizeInBytes,
   );
+
+  double get totalCacheSizeInBytes =>
+      dockerSystemDf.totalSizeInBytes +
+      mavenLocal.totalSizeInBytes +
+      gradleCache.totalSizeInBytes +
+      pubCache.totalSizeInBytes;
 }
 
 @riverpod
@@ -231,6 +237,23 @@ class HomePageViewModel extends _$HomePageViewModel {
     if (success) {
       // Refresh projects after deletion
       fetchProjects();
+    }
+  }
+
+  Future<void> deleteMavenLocal() async {
+    final repository = ref.read(devCacheRepositoryProvider);
+    final success = await repository.deleteMavenLocal();
+    if (success) {
+      // Refresh maven local after deletion
+      repository.fetchMavenLocal().then((mavenLocal) {
+        state = HomePageState(
+          dockerSystemDf: state.dockerSystemDf,
+          mavenLocal: mavenLocal,
+          gradleCache: state.gradleCache,
+          pubCache: state.pubCache,
+          projectCollection: state.projectCollection,
+        );
+      });
     }
   }
 }

@@ -18,6 +18,9 @@ abstract class HelperSource {
   @GET('/mavenCache')
   Future<MavenLocal> fetchMavenLocal();
 
+  @DELETE('/mavenCache')
+  Future<bool> deleteMavenLocal();
+
   @GET('/gradleCache')
   Future<GradleCache> fetchGradleCache();
 

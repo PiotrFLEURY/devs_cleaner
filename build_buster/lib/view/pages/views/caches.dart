@@ -40,6 +40,10 @@ class _CachesState extends ConsumerState<Caches> {
               },
               icon: Icon(Icons.refresh),
             ),
+            Text(
+              'Total cache size: ${viewModel.toFormattedString(viewModel.totalCacheSizeInBytes)}',
+              style: TextStyle(color: AppTheme.secondaryText),
+            ),
           ],
         ),
         SingleChildScrollView(
@@ -61,7 +65,13 @@ class _CachesState extends ConsumerState<Caches> {
                 diskUsageGb: viewModel.mavenLocalToFormattedString(),
                 color: AppTheme.mavenOrange,
                 buttonLabel: 'Clean Maven Cache',
-                onClean: () {},
+                onClean: () {
+                  confirmCacheCleanup(context, 'Maven Local Repository', () {
+                    ref
+                        .read(homePageViewModelProvider.notifier)
+                        .deleteMavenLocal();
+                  });
+                },
               ),
               CacheElement(
                 label: 'Gradle Build\nCache',
@@ -83,6 +93,37 @@ class _CachesState extends ConsumerState<Caches> {
           ),
         ),
       ],
+    );
+  }
+
+  void confirmCacheCleanup(
+    BuildContext context,
+    String cacheName,
+    VoidCallback onConfirm,
+  ) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Confirm Cleanup'),
+          content: Text('Are you sure you want to delete $cacheName cache?'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                onConfirm();
+                Navigator.of(context).pop();
+              },
+              child: Text('Confirm'),
+            ),
+          ],
+        );
+      },
     );
   }
 }

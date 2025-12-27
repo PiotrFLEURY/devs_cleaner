@@ -15,6 +15,7 @@ pub fn create_router() -> Router {
     Router::new()
         .route("/dockerCache", get(get_docker_cache))
         .route("/mavenCache", get(get_maven_cache))
+        .route("/mavenCache", delete(delete_maven_cache))
         .route("/gradleCache", get(get_gradle_cache))
         .route("/pubCache", get(get_pub_cache))
         .route("/projects/{path}", get(get_project_list))
@@ -33,6 +34,11 @@ pub async fn get_docker_cache() -> Json<Vec<DockerSystemDf>> {
 pub async fn get_maven_cache() -> Json<MavenCache> {
     let maven_cache = listing::maven_cache();
     Json(maven_cache)
+}
+
+pub async fn delete_maven_cache() -> Json<bool> {
+    let result = listing::delete_maven_cache();
+    Json(result)
 }
 
 pub async fn get_gradle_cache() -> Json<GradleCache> {

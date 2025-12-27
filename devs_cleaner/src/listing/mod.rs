@@ -311,3 +311,25 @@ pub fn delete_project_build_artifacts(path: &str) -> bool {
         return false;
     }
 }
+
+pub fn delete_maven_cache() -> bool {
+    let maven_cache_path = home_dir()
+        .map(|home| home.join(".m2").join("repository"))
+        .filter(|path| path.exists());
+
+    if let Some(path) = maven_cache_path {
+        match std::fs::remove_dir_all(&path) {
+            Ok(_) => {
+                println!("Successfully deleted Maven cache at {}", path.display());
+                true
+            }
+            Err(e) => {
+                eprintln!("Failed to delete Maven cache at {}: {}", path.display(), e);
+                false
+            }
+        }
+    } else {
+        println!("Maven cache not found.");
+        false
+    }
+}

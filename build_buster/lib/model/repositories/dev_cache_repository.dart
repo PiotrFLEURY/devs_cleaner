@@ -18,6 +18,10 @@ class DevCacheRepository {
     return helperSource.fetchMavenLocal();
   }
 
+  Future<bool> deleteMavenLocal() {
+    return helperSource.deleteMavenLocal();
+  }
+
   Future<GradleCache> fetchGradleCache() {
     return helperSource.fetchGradleCache();
   }
