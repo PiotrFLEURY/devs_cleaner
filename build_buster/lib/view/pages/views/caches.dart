@@ -57,7 +57,13 @@ class _CachesState extends ConsumerState<Caches> {
                 diskUsageGb: viewModel.dockerCacheToFormattedString(),
                 color: AppTheme.dockerBlue,
                 buttonLabel: 'Clean Docker Cache',
-                onClean: () {},
+                onClean: () {
+                  confirmCacheCleanup(context, 'Docker', () {
+                    ref
+                        .read(homePageViewModelProvider.notifier)
+                        .deleteDockerCache();
+                  });
+                },
               ),
               CacheElement(
                 label: 'Maven Local\nRepository',
@@ -79,7 +85,13 @@ class _CachesState extends ConsumerState<Caches> {
                 diskUsageGb: viewModel.gradleCacheToFormattedString(),
                 color: AppTheme.greenGradle,
                 buttonLabel: 'Clean Gradle Cache',
-                onClean: () {},
+                onClean: () {
+                  confirmCacheCleanup(context, 'Gradle Build', () {
+                    ref
+                        .read(homePageViewModelProvider.notifier)
+                        .deleteGradleCache();
+                  });
+                },
               ),
               CacheElement(
                 label: 'Pub Global Cache\n(Dart/Flutter)',
@@ -87,7 +99,13 @@ class _CachesState extends ConsumerState<Caches> {
                 diskUsageGb: viewModel.pubCacheToFormattedString(),
                 color: AppTheme.violetPub,
                 buttonLabel: 'Clean Pub Cache',
-                onClean: () {},
+                onClean: () {
+                  confirmCacheCleanup(context, 'Pub Global', () {
+                    ref
+                        .read(homePageViewModelProvider.notifier)
+                        .deletePubCache();
+                  });
+                },
               ),
             ],
           ),

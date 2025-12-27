@@ -256,4 +256,55 @@ class HomePageViewModel extends _$HomePageViewModel {
       });
     }
   }
+
+  Future<void> deleteGradleCache() async {
+    final repository = ref.read(devCacheRepositoryProvider);
+    final success = await repository.deleteGradleCache();
+    if (success) {
+      // Refresh gradle cache after deletion
+      repository.fetchGradleCache().then((gradleCache) {
+        state = HomePageState(
+          dockerSystemDf: state.dockerSystemDf,
+          mavenLocal: state.mavenLocal,
+          gradleCache: gradleCache,
+          pubCache: state.pubCache,
+          projectCollection: state.projectCollection,
+        );
+      });
+    }
+  }
+
+  Future<void> deletePubCache() async {
+    final repository = ref.read(devCacheRepositoryProvider);
+    final success = await repository.deletePubCache();
+    if (success) {
+      // Refresh pub cache after deletion
+      repository.fetchPubCache().then((pubCache) {
+        state = HomePageState(
+          dockerSystemDf: state.dockerSystemDf,
+          mavenLocal: state.mavenLocal,
+          gradleCache: state.gradleCache,
+          pubCache: pubCache,
+          projectCollection: state.projectCollection,
+        );
+      });
+    }
+  }
+
+  Future<void> deleteDockerCache() async {
+    final repository = ref.read(devCacheRepositoryProvider);
+    final success = await repository.deleteDockerCache();
+    if (success) {
+      // Refresh docker cache after deletion
+      repository.fetchDockerSystemDf().then((dockerDfList) {
+        state = HomePageState(
+          dockerSystemDf: DockerSystemDfWrapper(dockerSystemDf: dockerDfList),
+          mavenLocal: state.mavenLocal,
+          gradleCache: state.gradleCache,
+          pubCache: state.pubCache,
+          projectCollection: state.projectCollection,
+        );
+      });
+    }
+  }
 }

@@ -14,10 +14,13 @@ use crate::{
 pub fn create_router() -> Router {
     Router::new()
         .route("/dockerCache", get(get_docker_cache))
+        .route("/dockerCache", delete(delete_docker_cache))
         .route("/mavenCache", get(get_maven_cache))
         .route("/mavenCache", delete(delete_maven_cache))
         .route("/gradleCache", get(get_gradle_cache))
+        .route("/gradleCache", delete(delete_gradle_cache))
         .route("/pubCache", get(get_pub_cache))
+        .route("/pubCache", delete(delete_pub_cache))
         .route("/projects/{path}", get(get_project_list))
         .route("/projects", delete(delete_project_build))
         .fallback(get(|| async { "Not Found" }))
@@ -29,6 +32,11 @@ pub async fn get_docker_cache() -> Json<Vec<DockerSystemDf>> {
     } else {
         Json(Vec::new())
     }
+}
+
+pub async fn delete_docker_cache() -> Json<bool> {
+    let result = listing::delete_docker_cache();
+    Json(result)
 }
 
 pub async fn get_maven_cache() -> Json<MavenCache> {
@@ -44,6 +52,11 @@ pub async fn delete_maven_cache() -> Json<bool> {
 pub async fn get_gradle_cache() -> Json<GradleCache> {
     let gradle_cache = listing::gradle_cache();
     Json(gradle_cache)
+}
+
+pub async fn delete_gradle_cache() -> Json<bool> {
+    let result = listing::delete_gradle_cache();
+    Json(result)
 }
 
 pub async fn get_pub_cache() -> Json<PubCache> {
@@ -65,5 +78,10 @@ pub async fn delete_project_build(Query(params): Query<HashMap<String, String>>)
         None => return Json(false),
     };
     let result = listing::delete_project_build_artifacts(&path);
+    Json(result)
+}
+
+pub async fn delete_pub_cache() -> Json<bool> {
+    let result = listing::delete_pub_cache();
     Json(result)
 }

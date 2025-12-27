@@ -15,6 +15,9 @@ abstract class HelperSource {
   @GET('/dockerCache')
   Future<List<DockerSystemDf>> fetchDockerSystemDf();
 
+  @DELETE('/dockerCache')
+  Future<bool> deleteDockerCache();
+
   @GET('/mavenCache')
   Future<MavenLocal> fetchMavenLocal();
 
@@ -24,8 +27,14 @@ abstract class HelperSource {
   @GET('/gradleCache')
   Future<GradleCache> fetchGradleCache();
 
+  @DELETE('/gradleCache')
+  Future<bool> deleteGradleCache();
+
   @GET('/pubCache')
   Future<PubCache> fetchPubCache();
+
+  @DELETE('/pubCache')
+  Future<bool> deletePubCache();
 
   @GET('/projects/{path}')
   Future<DevProjectCollection> fetchProjects(@Path("path") String path);

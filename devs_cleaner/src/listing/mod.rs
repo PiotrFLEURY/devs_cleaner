@@ -333,3 +333,75 @@ pub fn delete_maven_cache() -> bool {
         false
     }
 }
+
+pub fn delete_gradle_cache() -> bool {
+    let gradle_cache_path = home_dir()
+        .map(|home| home.join(".gradle").join("caches"))
+        .filter(|path| path.exists());
+
+    if let Some(path) = gradle_cache_path {
+        match std::fs::remove_dir_all(&path) {
+            Ok(_) => {
+                println!("Successfully deleted Gradle cache at {}", path.display());
+                true
+            }
+            Err(e) => {
+                eprintln!("Failed to delete Gradle cache at {}: {}", path.display(), e);
+                false
+            }
+        }
+    } else {
+        println!("Gradle cache not found.");
+        false
+    }
+}
+
+pub fn delete_pub_cache() -> bool {
+    let pub_cache_path = home_dir()
+        .map(|home| home.join(".pub-cache"))
+        .filter(|path| path.exists());
+
+    if let Some(path) = pub_cache_path {
+        match std::fs::remove_dir_all(&path) {
+            Ok(_) => {
+                println!("Successfully deleted Pub cache at {}", path.display());
+                true
+            }
+            Err(e) => {
+                eprintln!("Failed to delete Pub cache at {}: {}", path.display(), e);
+                false
+            }
+        }
+    } else {
+        println!("Pub cache not found.");
+        false
+    }
+}
+
+pub fn delete_docker_cache() -> bool {
+    let output = std::process::Command::new("docker")
+        .arg("system")
+        .arg("prune")
+        .arg("-f")
+        .arg("-a")
+        .output();
+
+    match output {
+        Ok(output) => {
+            if output.status.success() {
+                println!("Successfully deleted Docker cache.");
+                true
+            } else {
+                eprintln!(
+                    "Failed to delete Docker cache: {}",
+                    String::from_utf8_lossy(&output.stderr)
+                );
+                false
+            }
+        }
+        Err(e) => {
+            eprintln!("Error executing docker command: {}", e);
+            false
+        }
+    }
+}

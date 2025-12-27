@@ -26,6 +26,10 @@ class DevCacheRepository {
     return helperSource.fetchGradleCache();
   }
 
+  Future<bool> deleteGradleCache() {
+    return helperSource.deleteGradleCache();
+  }
+
   Future<PubCache> fetchPubCache() {
     return helperSource.fetchPubCache();
   }
@@ -36,5 +40,13 @@ class DevCacheRepository {
 
   Future<bool> deleteBuildArtifacts(String projectPath) {
     return helperSource.deleteBuildArtifacts(projectPath);
+  }
+
+  Future<bool> deletePubCache() {
+    return helperSource.deletePubCache();
+  }
+
+  Future<bool> deleteDockerCache() {
+    return helperSource.deleteDockerCache();
   }
 }
