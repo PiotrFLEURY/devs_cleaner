@@ -36,8 +36,8 @@ abstract class HelperSource {
   @DELETE('/pubCache')
   Future<bool> deletePubCache();
 
-  @GET('/projects/{path}')
-  Future<DevProjectCollection> fetchProjects(@Path("path") String path);
+  @GET('/projects/')
+  Future<DevProjectCollection> fetchProjects(@Query("path") String path);
 
   @DELETE('/projects')
   Future<bool> deleteBuildArtifacts(@Query("projectPath") String projectPath);

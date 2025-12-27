@@ -6,11 +6,7 @@ use crate::models::{
     DevProject, DockerSystemDf, GradleCache, MavenCache, ProjectCollection, PubCache, Technology,
 };
 
-pub fn list_projects(path: &str) -> ProjectCollection {
-    let home_directory = home_dir()
-        .unwrap_or_else(|| path::PathBuf::from("."))
-        .join(path);
-    let path_str = home_directory.to_str().unwrap_or(".");
+pub fn list_projects(path_str: &str) -> ProjectCollection {
     let mut project_collection = ProjectCollection::new();
     for result in WalkDir::new(path_str) {
         match result {

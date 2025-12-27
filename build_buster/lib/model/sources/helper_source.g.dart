@@ -244,14 +244,14 @@ class _HelperSource implements HelperSource {
   @override
   Future<DevProjectCollection> fetchProjects(String path) async {
     final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{r'path': path};
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
     final _options = _setStreamType<DevProjectCollection>(
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/projects/${path}',
+            '/projects/',
             queryParameters: queryParameters,
             data: _data,
           )

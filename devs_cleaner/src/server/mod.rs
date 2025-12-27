@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use axum::{
     Json, Router,
-    extract::{Path, Query},
+    extract::Query,
     routing::{delete, get},
 };
 
@@ -21,7 +21,7 @@ pub fn create_router() -> Router {
         .route("/gradleCache", delete(delete_gradle_cache))
         .route("/pubCache", get(get_pub_cache))
         .route("/pubCache", delete(delete_pub_cache))
-        .route("/projects/{path}", get(get_project_list))
+        .route("/projects/", get(get_project_list))
         .route("/projects", delete(delete_project_build))
         .fallback(get(|| async { "Not Found" }))
 }
@@ -64,10 +64,13 @@ pub async fn get_pub_cache() -> Json<PubCache> {
     Json(pub_cache)
 }
 
-pub async fn get_project_list(Path(path): Path<String>) -> Json<ProjectCollection> {
-    if path.is_empty() {
-        return Json(ProjectCollection::new());
-    }
+pub async fn get_project_list(
+    Query(params): Query<HashMap<String, String>>,
+) -> Json<ProjectCollection> {
+    let path = match params.get("path") {
+        Some(p) => p,
+        None => return Json(ProjectCollection::new()),
+    };
     let projects = listing::list_projects(path.as_str());
     Json(projects)
 }

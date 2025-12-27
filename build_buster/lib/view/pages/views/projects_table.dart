@@ -1,6 +1,7 @@
 import 'package:build_buster/model/data/dev_project.dart';
 import 'package:build_buster/view/theme.dart';
 import 'package:build_buster/view_model/home_page_view_model.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -18,11 +19,20 @@ class Projects extends ConsumerWidget {
           'Projects',
           style: TextStyle(color: AppTheme.mainText, fontSize: 24),
         ),
-        ElevatedButton(
-          onPressed: () {
-            ref.read(homePageViewModelProvider.notifier).fetchProjects();
-          },
-          child: Text('Scan for Projects'),
+        Row(
+          children: [
+            ElevatedButton(
+              onPressed: () {
+                _scanProjects(ref);
+              },
+              child: Text('Scan for Projects'),
+            ),
+            SizedBox(width: 16.0),
+            Text(
+              'Scanned Path: ${viewModel.projectsPath}',
+              style: TextStyle(color: AppTheme.secondaryText),
+            ),
+          ],
         ),
         // Placeholder for project list
         Expanded(
@@ -151,6 +161,21 @@ class Projects extends ConsumerWidget {
         ),
       ],
     );
+  }
+
+  Future<void> _scanProjects(WidgetRef ref) async {
+    List<String>? result = await FilePicker.platform.pickFileAndDirectoryPaths(
+      type: FileType.custom,
+      allowedExtensions: [''],
+    );
+    if (result == null || result.length != 1 || _hasExtention(result[0])) {
+      return; // User canceled the picker
+    }
+    ref.read(homePageViewModelProvider.notifier).fetchProjects(result[0]);
+  }
+
+  bool _hasExtention(String path) {
+    return path.split('/').last.contains('.');
   }
 
   void confirmProjectCleanup(

@@ -40,6 +40,7 @@ class HomePageState {
     required this.mavenLocal,
     required this.gradleCache,
     required this.pubCache,
+    required this.projectsPath,
     required this.projectCollection,
   });
 
@@ -49,6 +50,7 @@ class HomePageState {
       mavenLocal: MavenLocal(path: '', totalSizeInBytes: 0),
       gradleCache: GradleCache(path: '', totalSizeInBytes: 0),
       pubCache: PubCache(path: '', totalSizeInBytes: 0),
+      projectsPath: '',
       projectCollection: DevProjectCollection(projects: []),
     );
   }
@@ -57,6 +59,7 @@ class HomePageState {
   MavenLocal mavenLocal;
   GradleCache gradleCache;
   PubCache pubCache;
+  String projectsPath = '';
   DevProjectCollection projectCollection;
 
   List<DevProject> get sortedDevProjects {
@@ -166,6 +169,7 @@ class HomePageViewModel extends _$HomePageViewModel {
         mavenLocal: state.mavenLocal,
         gradleCache: state.gradleCache,
         pubCache: state.pubCache,
+        projectsPath: state.projectsPath,
         projectCollection: state.projectCollection,
       );
     });
@@ -176,6 +180,7 @@ class HomePageViewModel extends _$HomePageViewModel {
         mavenLocal: mavenLocal,
         gradleCache: state.gradleCache,
         pubCache: state.pubCache,
+        projectsPath: state.projectsPath,
         projectCollection: state.projectCollection,
       );
     });
@@ -186,6 +191,7 @@ class HomePageViewModel extends _$HomePageViewModel {
         mavenLocal: state.mavenLocal,
         gradleCache: gradleCache,
         pubCache: state.pubCache,
+        projectsPath: state.projectsPath,
         projectCollection: state.projectCollection,
       );
     });
@@ -196,36 +202,29 @@ class HomePageViewModel extends _$HomePageViewModel {
         mavenLocal: state.mavenLocal,
         gradleCache: state.gradleCache,
         pubCache: pubCache,
+        projectsPath: state.projectsPath,
         projectCollection: state.projectCollection,
-      );
-    });
-
-    repository.fetchProjects('development').then((projects) {
-      state = HomePageState(
-        dockerSystemDf: state.dockerSystemDf,
-        mavenLocal: state.mavenLocal,
-        gradleCache: state.gradleCache,
-        pubCache: state.pubCache,
-        projectCollection: projects,
       );
     });
   }
 
-  void fetchProjects() {
+  void fetchProjects(String path) {
     state = HomePageState(
       dockerSystemDf: state.dockerSystemDf,
       mavenLocal: state.mavenLocal,
       gradleCache: state.gradleCache,
       pubCache: state.pubCache,
+      projectsPath: path,
       projectCollection: DevProjectCollection(projects: []),
     );
     final repository = ref.read(devCacheRepositoryProvider);
-    repository.fetchProjects('development').then((projects) {
+    repository.fetchProjects(path).then((projects) {
       state = HomePageState(
         dockerSystemDf: state.dockerSystemDf,
         mavenLocal: state.mavenLocal,
         gradleCache: state.gradleCache,
         pubCache: state.pubCache,
+        projectsPath: state.projectsPath,
         projectCollection: projects,
       );
     });
@@ -236,7 +235,7 @@ class HomePageViewModel extends _$HomePageViewModel {
     final success = await repository.deleteBuildArtifacts(projectPath);
     if (success) {
       // Refresh projects after deletion
-      fetchProjects();
+      fetchProjects(state.projectsPath);
     }
   }
 
@@ -251,6 +250,7 @@ class HomePageViewModel extends _$HomePageViewModel {
           mavenLocal: mavenLocal,
           gradleCache: state.gradleCache,
           pubCache: state.pubCache,
+          projectsPath: state.projectsPath,
           projectCollection: state.projectCollection,
         );
       });
@@ -268,6 +268,7 @@ class HomePageViewModel extends _$HomePageViewModel {
           mavenLocal: state.mavenLocal,
           gradleCache: gradleCache,
           pubCache: state.pubCache,
+          projectsPath: state.projectsPath,
           projectCollection: state.projectCollection,
         );
       });
@@ -285,6 +286,7 @@ class HomePageViewModel extends _$HomePageViewModel {
           mavenLocal: state.mavenLocal,
           gradleCache: state.gradleCache,
           pubCache: pubCache,
+          projectsPath: state.projectsPath,
           projectCollection: state.projectCollection,
         );
       });
@@ -302,6 +304,7 @@ class HomePageViewModel extends _$HomePageViewModel {
           mavenLocal: state.mavenLocal,
           gradleCache: state.gradleCache,
           pubCache: state.pubCache,
+          projectsPath: state.projectsPath,
           projectCollection: state.projectCollection,
         );
       });
