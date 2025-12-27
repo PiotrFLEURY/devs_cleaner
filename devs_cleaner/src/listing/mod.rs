@@ -37,7 +37,13 @@ fn to_project(dir_entry: &walkdir::DirEntry) -> Option<DevProject> {
     let path = dir_entry.path().to_str()?.to_string();
     if let Some(technology) = identify_technology(&path) {
         let size_in_bytes = project_size_in_bytes(&path);
-        Some(DevProject::new(path, technology, size_in_bytes))
+        let has_build_artifact = has_built_artifacts(&technology, &path);
+        Some(DevProject::new(
+            path,
+            technology,
+            size_in_bytes,
+            has_build_artifact,
+        ))
     } else {
         None
     }
@@ -262,5 +268,46 @@ pub fn pub_cache() -> PubCache {
     PubCache {
         path: pub_cache_path,
         total_size_in_bytes,
+    }
+}
+
+pub fn delete_project_build_artifacts(path: &str) -> bool {
+    if let Some(technology) = identify_technology(path) {
+        let build_artifact_path = match technology {
+            Technology::Flutter => path::Path::new(path).join("build"),
+            Technology::JavaScript => path::Path::new(path).join("node_modules"),
+            Technology::Rust => path::Path::new(path).join("target"),
+            Technology::Maven => path::Path::new(path).join("target"),
+            Technology::Gradle => path::Path::new(path).join("build"),
+        };
+
+        if build_artifact_path.exists() {
+            match std::fs::remove_dir_all(&build_artifact_path) {
+                Ok(_) => {
+                    println!(
+                        "Successfully deleted build artifacts at {}",
+                        build_artifact_path.display()
+                    );
+                    return true;
+                }
+                Err(e) => {
+                    eprintln!(
+                        "Failed to delete build artifacts at {}: {}",
+                        build_artifact_path.display(),
+                        e
+                    );
+                    return false;
+                }
+            }
+        } else {
+            println!(
+                "No build artifacts found at {}",
+                build_artifact_path.display()
+            );
+            return false;
+        }
+    } else {
+        println!("Technology could not be identified for path: {}", path);
+        return false;
     }
 }

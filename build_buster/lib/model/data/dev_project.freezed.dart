@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$DevProject {
 
- String get path; String get technology; double get sizeInBytes;
+ String get path; String get technology; double get sizeInBytes; bool get hasBuildArtifact;
 /// Create a copy of DevProject
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $DevProjectCopyWith<DevProject> get copyWith => _$DevProjectCopyWithImpl<DevProj
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is DevProject&&(identical(other.path, path) || other.path == path)&&(identical(other.technology, technology) || other.technology == technology)&&(identical(other.sizeInBytes, sizeInBytes) || other.sizeInBytes == sizeInBytes));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is DevProject&&(identical(other.path, path) || other.path == path)&&(identical(other.technology, technology) || other.technology == technology)&&(identical(other.sizeInBytes, sizeInBytes) || other.sizeInBytes == sizeInBytes)&&(identical(other.hasBuildArtifact, hasBuildArtifact) || other.hasBuildArtifact == hasBuildArtifact));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,path,technology,sizeInBytes);
+int get hashCode => Object.hash(runtimeType,path,technology,sizeInBytes,hasBuildArtifact);
 
 @override
 String toString() {
-  return 'DevProject(path: $path, technology: $technology, sizeInBytes: $sizeInBytes)';
+  return 'DevProject(path: $path, technology: $technology, sizeInBytes: $sizeInBytes, hasBuildArtifact: $hasBuildArtifact)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $DevProjectCopyWith<$Res>  {
   factory $DevProjectCopyWith(DevProject value, $Res Function(DevProject) _then) = _$DevProjectCopyWithImpl;
 @useResult
 $Res call({
- String path, String technology, double sizeInBytes
+ String path, String technology, double sizeInBytes, bool hasBuildArtifact
 });
 
 
@@ -65,12 +65,13 @@ class _$DevProjectCopyWithImpl<$Res>
 
 /// Create a copy of DevProject
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? path = null,Object? technology = null,Object? sizeInBytes = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? path = null,Object? technology = null,Object? sizeInBytes = null,Object? hasBuildArtifact = null,}) {
   return _then(_self.copyWith(
 path: null == path ? _self.path : path // ignore: cast_nullable_to_non_nullable
 as String,technology: null == technology ? _self.technology : technology // ignore: cast_nullable_to_non_nullable
 as String,sizeInBytes: null == sizeInBytes ? _self.sizeInBytes : sizeInBytes // ignore: cast_nullable_to_non_nullable
-as double,
+as double,hasBuildArtifact: null == hasBuildArtifact ? _self.hasBuildArtifact : hasBuildArtifact // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 
@@ -155,10 +156,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String path,  String technology,  double sizeInBytes)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String path,  String technology,  double sizeInBytes,  bool hasBuildArtifact)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _DevProject() when $default != null:
-return $default(_that.path,_that.technology,_that.sizeInBytes);case _:
+return $default(_that.path,_that.technology,_that.sizeInBytes,_that.hasBuildArtifact);case _:
   return orElse();
 
 }
@@ -176,10 +177,10 @@ return $default(_that.path,_that.technology,_that.sizeInBytes);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String path,  String technology,  double sizeInBytes)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String path,  String technology,  double sizeInBytes,  bool hasBuildArtifact)  $default,) {final _that = this;
 switch (_that) {
 case _DevProject():
-return $default(_that.path,_that.technology,_that.sizeInBytes);case _:
+return $default(_that.path,_that.technology,_that.sizeInBytes,_that.hasBuildArtifact);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -196,10 +197,10 @@ return $default(_that.path,_that.technology,_that.sizeInBytes);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String path,  String technology,  double sizeInBytes)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String path,  String technology,  double sizeInBytes,  bool hasBuildArtifact)?  $default,) {final _that = this;
 switch (_that) {
 case _DevProject() when $default != null:
-return $default(_that.path,_that.technology,_that.sizeInBytes);case _:
+return $default(_that.path,_that.technology,_that.sizeInBytes,_that.hasBuildArtifact);case _:
   return null;
 
 }
@@ -211,12 +212,13 @@ return $default(_that.path,_that.technology,_that.sizeInBytes);case _:
 @JsonSerializable()
 
 class _DevProject implements DevProject {
-  const _DevProject({required this.path, required this.technology, required this.sizeInBytes});
+  const _DevProject({required this.path, required this.technology, required this.sizeInBytes, required this.hasBuildArtifact});
   factory _DevProject.fromJson(Map<String, dynamic> json) => _$DevProjectFromJson(json);
 
 @override final  String path;
 @override final  String technology;
 @override final  double sizeInBytes;
+@override final  bool hasBuildArtifact;
 
 /// Create a copy of DevProject
 /// with the given fields replaced by the non-null parameter values.
@@ -231,16 +233,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _DevProject&&(identical(other.path, path) || other.path == path)&&(identical(other.technology, technology) || other.technology == technology)&&(identical(other.sizeInBytes, sizeInBytes) || other.sizeInBytes == sizeInBytes));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _DevProject&&(identical(other.path, path) || other.path == path)&&(identical(other.technology, technology) || other.technology == technology)&&(identical(other.sizeInBytes, sizeInBytes) || other.sizeInBytes == sizeInBytes)&&(identical(other.hasBuildArtifact, hasBuildArtifact) || other.hasBuildArtifact == hasBuildArtifact));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,path,technology,sizeInBytes);
+int get hashCode => Object.hash(runtimeType,path,technology,sizeInBytes,hasBuildArtifact);
 
 @override
 String toString() {
-  return 'DevProject(path: $path, technology: $technology, sizeInBytes: $sizeInBytes)';
+  return 'DevProject(path: $path, technology: $technology, sizeInBytes: $sizeInBytes, hasBuildArtifact: $hasBuildArtifact)';
 }
 
 
@@ -251,7 +253,7 @@ abstract mixin class _$DevProjectCopyWith<$Res> implements $DevProjectCopyWith<$
   factory _$DevProjectCopyWith(_DevProject value, $Res Function(_DevProject) _then) = __$DevProjectCopyWithImpl;
 @override @useResult
 $Res call({
- String path, String technology, double sizeInBytes
+ String path, String technology, double sizeInBytes, bool hasBuildArtifact
 });
 
 
@@ -268,12 +270,13 @@ class __$DevProjectCopyWithImpl<$Res>
 
 /// Create a copy of DevProject
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? path = null,Object? technology = null,Object? sizeInBytes = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? path = null,Object? technology = null,Object? sizeInBytes = null,Object? hasBuildArtifact = null,}) {
   return _then(_DevProject(
 path: null == path ? _self.path : path // ignore: cast_nullable_to_non_nullable
 as String,technology: null == technology ? _self.technology : technology // ignore: cast_nullable_to_non_nullable
 as String,sizeInBytes: null == sizeInBytes ? _self.sizeInBytes : sizeInBytes // ignore: cast_nullable_to_non_nullable
-as double,
+as double,hasBuildArtifact: null == hasBuildArtifact ? _self.hasBuildArtifact : hasBuildArtifact // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 

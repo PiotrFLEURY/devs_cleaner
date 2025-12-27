@@ -26,4 +26,7 @@ abstract class HelperSource {
 
   @GET('/projects/{path}')
   Future<DevProjectCollection> fetchProjects(@Path("path") String path);
+
+  @DELETE('/projects')
+  Future<bool> deleteBuildArtifacts(@Query("projectPath") String projectPath);
 }

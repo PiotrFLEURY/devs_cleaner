@@ -1,4 +1,10 @@
-use axum::{Json, Router, extract::Path, routing::get};
+use std::collections::HashMap;
+
+use axum::{
+    Json, Router,
+    extract::{Path, Query},
+    routing::{delete, get},
+};
 
 use crate::{
     listing,
@@ -12,6 +18,7 @@ pub fn create_router() -> Router {
         .route("/gradleCache", get(get_gradle_cache))
         .route("/pubCache", get(get_pub_cache))
         .route("/projects/{path}", get(get_project_list))
+        .route("/projects", delete(delete_project_build))
         .fallback(get(|| async { "Not Found" }))
 }
 
@@ -44,4 +51,13 @@ pub async fn get_project_list(Path(path): Path<String>) -> Json<ProjectCollectio
     }
     let projects = listing::list_projects(path.as_str());
     Json(projects)
+}
+
+pub async fn delete_project_build(Query(params): Query<HashMap<String, String>>) -> Json<bool> {
+    let path = match params.get("projectPath") {
+        Some(p) => p,
+        None => return Json(false),
+    };
+    let result = listing::delete_project_build_artifacts(&path);
+    Json(result)
 }

@@ -65,8 +65,8 @@ class Projects extends ConsumerWidget {
                     ),
                   ],
                 ),
-                ...viewModel.projectCollection.projects.map((project) {
-                  return _buildProjectRow(viewModel, project);
+                ...viewModel.sortedDevProjects.map((project) {
+                  return _buildProjectRow(viewModel, project, ref);
                 }),
               ],
             ),
@@ -77,7 +77,7 @@ class Projects extends ConsumerWidget {
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             Text(
-              'Total Used: 209.8 GB / 500 GB',
+              'Total project size: ${viewModel.toFormattedString(viewModel.totalProjectSizeInBytes)}',
               style: TextStyle(color: AppTheme.secondaryText),
             ),
             ElevatedButton(
@@ -94,7 +94,11 @@ class Projects extends ConsumerWidget {
     );
   }
 
-  TableRow _buildProjectRow(HomePageState viewModel, DevProject project) {
+  TableRow _buildProjectRow(
+    HomePageState viewModel,
+    DevProject project,
+    WidgetRef ref,
+  ) {
     return TableRow(
       decoration: BoxDecoration(color: AppTheme.mainText),
       children: [
@@ -129,15 +133,57 @@ class Projects extends ConsumerWidget {
                   style: TextStyle(color: AppTheme.secondaryText),
                 ),
                 Spacer(),
-                IconButton(
-                  onPressed: () {},
-                  icon: Icon(Icons.delete_outline_outlined),
-                ),
+                if (project.hasBuildArtifact)
+                  IconButton(
+                    onPressed: () {
+                      debugPrint('Delete build artifacts for ${project.path}');
+                      confirmProjectCleanup(ref.context, project.path, () {
+                        ref
+                            .read(homePageViewModelProvider.notifier)
+                            .deleteBuildArtifacts(project.path);
+                      });
+                    },
+                    icon: Icon(Icons.delete_outline_outlined),
+                  ),
               ],
             ),
           ),
         ),
       ],
+    );
+  }
+
+  void confirmProjectCleanup(
+    BuildContext context,
+    String projectPath,
+    VoidCallback onConfirm,
+  ) {
+    showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Confirm Cleanup'),
+          content: Text(
+            'Are you sure you want to delete build artifacts for project $projectPath ?',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Dismiss dialog
+              },
+              child: Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                // Call cleanup function here
+                onConfirm();
+                Navigator.of(context).pop(); // Dismiss dialog
+              },
+              child: Text('Confirm'),
+            ),
+          ],
+        );
+      },
     );
   }
 }

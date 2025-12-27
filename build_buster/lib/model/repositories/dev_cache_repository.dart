@@ -29,4 +29,8 @@ class DevCacheRepository {
   Future<DevProjectCollection> fetchProjects(String path) {
     return helperSource.fetchProjects(path);
   }
+
+  Future<bool> deleteBuildArtifacts(String projectPath) {
+    return helperSource.deleteBuildArtifacts(projectPath);
+  }
 }

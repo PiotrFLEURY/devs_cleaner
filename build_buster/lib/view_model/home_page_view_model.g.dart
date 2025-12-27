@@ -41,7 +41,7 @@ final class HomePageViewModelProvider
   }
 }
 
-String _$homePageViewModelHash() => r'5a344750787b55ab204e533a5d13464b6236bb8a';
+String _$homePageViewModelHash() => r'1d710c98f7a524a51df3a260b71ab59e88b0e7a2';
 
 abstract class _$HomePageViewModel extends $Notifier<HomePageState> {
   HomePageState build();

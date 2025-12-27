@@ -9,6 +9,7 @@ abstract class DevProject with _$DevProject {
     required String path,
     required String technology,
     required double sizeInBytes,
+    required bool hasBuildArtifact,
   }) = _DevProject;
 
   factory DevProject.fromJson(Map<String, dynamic> json) =>

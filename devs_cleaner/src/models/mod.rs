@@ -13,14 +13,22 @@ pub struct DevProject {
     pub technology: Technology,
     #[serde(rename = "sizeInBytes")]
     pub size_in_bytes: u64,
+    #[serde(rename = "hasBuildArtifact")]
+    pub has_build_artifact: bool,
 }
 
 impl DevProject {
-    pub fn new(path: String, technology: Technology, size_in_bytes: u64) -> Self {
+    pub fn new(
+        path: String,
+        technology: Technology,
+        size_in_bytes: u64,
+        has_build_artifact: bool,
+    ) -> Self {
         DevProject {
             path,
             technology,
             size_in_bytes,
+            has_build_artifact,
         }
     }
 }

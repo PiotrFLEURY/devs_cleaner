@@ -59,6 +59,12 @@ class HomePageState {
   PubCache pubCache;
   DevProjectCollection projectCollection;
 
+  List<DevProject> get sortedDevProjects {
+    final projects = List<DevProject>.from(projectCollection.projects);
+    projects.sort((a, b) => b.sizeInBytes.compareTo(a.sizeInBytes));
+    return projects;
+  }
+
   String toFormattedString(double sizeInBytes) {
     if (sizeInBytes >= 1e9) {
       return '${(sizeInBytes / 1e9).toStringAsFixed(2)} GB';
@@ -132,6 +138,11 @@ class HomePageState {
     if (totalSizeUsedInGb == 0) return 0;
     return ((totalPubCacheSizeInGb / totalSizeUsedInGb) * 100).roundToDouble();
   }
+
+  double get totalProjectSizeInBytes => projectCollection.projects.fold(
+    0,
+    (sum, project) => sum + project.sizeInBytes,
+  );
 }
 
 @riverpod
@@ -212,5 +223,14 @@ class HomePageViewModel extends _$HomePageViewModel {
         projectCollection: projects,
       );
     });
+  }
+
+  Future<void> deleteBuildArtifacts(String projectPath) async {
+    final repository = ref.read(devCacheRepositoryProvider);
+    final success = await repository.deleteBuildArtifacts(projectPath);
+    if (success) {
+      // Refresh projects after deletion
+      fetchProjects();
+    }
   }
 }

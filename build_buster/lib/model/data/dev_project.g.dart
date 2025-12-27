@@ -10,6 +10,7 @@ _DevProject _$DevProjectFromJson(Map<String, dynamic> json) => _DevProject(
   path: json['path'] as String,
   technology: json['technology'] as String,
   sizeInBytes: (json['sizeInBytes'] as num).toDouble(),
+  hasBuildArtifact: json['hasBuildArtifact'] as bool,
 );
 
 Map<String, dynamic> _$DevProjectToJson(_DevProject instance) =>
@@ -17,6 +18,7 @@ Map<String, dynamic> _$DevProjectToJson(_DevProject instance) =>
       'path': instance.path,
       'technology': instance.technology,
       'sizeInBytes': instance.sizeInBytes,
+      'hasBuildArtifact': instance.hasBuildArtifact,
     };
 
 _DevProjectCollection _$DevProjectCollectionFromJson(
