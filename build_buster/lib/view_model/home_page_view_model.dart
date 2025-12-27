@@ -1,0 +1,216 @@
+import 'package:build_buster/model/data/dev_project.dart';
+import 'package:build_buster/model/data/docker_system_df.dart';
+import 'package:build_buster/model/data/gradle_cache.dart';
+import 'package:build_buster/model/data/maven_local.dart';
+import 'package:build_buster/model/data/pub_cache.dart';
+import 'package:build_buster/view_model/providers/dev_cache_repository_provider.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'home_page_view_model.g.dart';
+
+class DockerSystemDfWrapper {
+  DockerSystemDfWrapper({required this.dockerSystemDf});
+
+  final List<DockerSystemDf> dockerSystemDf;
+
+  double get totalSizeInBytes {
+    return dockerSystemDf.fold(0, (sum, df) => sum + _parseInBytes(df.size));
+  }
+
+  double get totalDockerCacheSizeInGb {
+    return totalSizeInBytes / 1e9;
+  }
+
+  int _parseInBytes(String sizeStr) {
+    if (sizeStr.endsWith('GB')) {
+      return (double.parse(sizeStr.replaceAll('GB', '').trim()) * 1e9).toInt();
+    } else if (sizeStr.endsWith('MB')) {
+      return (double.parse(sizeStr.replaceAll('MB', '').trim()) * 1e6).toInt();
+    } else if (sizeStr.endsWith('KB')) {
+      return (double.parse(sizeStr.replaceAll('KB', '').trim()) * 1e3).toInt();
+    } else {
+      return 0;
+    }
+  }
+}
+
+class HomePageState {
+  HomePageState({
+    required this.dockerSystemDf,
+    required this.mavenLocal,
+    required this.gradleCache,
+    required this.pubCache,
+    required this.projectCollection,
+  });
+
+  factory HomePageState.empty() {
+    return HomePageState(
+      dockerSystemDf: DockerSystemDfWrapper(dockerSystemDf: []),
+      mavenLocal: MavenLocal(path: '', totalSizeInBytes: 0),
+      gradleCache: GradleCache(path: '', totalSizeInBytes: 0),
+      pubCache: PubCache(path: '', totalSizeInBytes: 0),
+      projectCollection: DevProjectCollection(projects: []),
+    );
+  }
+
+  DockerSystemDfWrapper dockerSystemDf;
+  MavenLocal mavenLocal;
+  GradleCache gradleCache;
+  PubCache pubCache;
+  DevProjectCollection projectCollection;
+
+  String toFormattedString(double sizeInBytes) {
+    if (sizeInBytes >= 1e9) {
+      return '${(sizeInBytes / 1e9).toStringAsFixed(2)} GB';
+    } else if (sizeInBytes >= 1e6) {
+      return '${(sizeInBytes / 1e6).toStringAsFixed(2)} MB';
+    } else if (sizeInBytes >= 1e3) {
+      return '${(sizeInBytes / 1e3).toStringAsFixed(2)} KB';
+    } else {
+      return '$sizeInBytes B';
+    }
+  }
+
+  String dockerCacheToFormattedString() {
+    return toFormattedString(dockerSystemDf.totalSizeInBytes);
+  }
+
+  String mavenLocalToFormattedString() {
+    return toFormattedString(mavenLocal.totalSizeInBytes);
+  }
+
+  String gradleCacheToFormattedString() {
+    return toFormattedString(gradleCache.totalSizeInBytes);
+  }
+
+  String pubCacheToFormattedString() {
+    return toFormattedString(pubCache.totalSizeInBytes);
+  }
+
+  double get totalMavenCacheSizeInGb {
+    return mavenLocal.totalSizeInBytes / 1e9;
+  }
+
+  double get totalGradleCacheSizeInGb {
+    return gradleCache.totalSizeInBytes / 1e9;
+  }
+
+  double get totalPubCacheSizeInGb {
+    return pubCache.totalSizeInBytes / 1e9;
+  }
+
+  double get totalSizeUsedInGb {
+    return dockerSystemDf.totalDockerCacheSizeInGb +
+        totalMavenCacheSizeInGb +
+        totalGradleCacheSizeInGb +
+        totalPubCacheSizeInGb;
+  }
+
+  double get dockerPercentageUsed {
+    // percentage used by docker compared to total size used
+    if (totalSizeUsedInGb == 0) return 0;
+    return ((dockerSystemDf.totalDockerCacheSizeInGb / totalSizeUsedInGb) * 100)
+        .roundToDouble();
+  }
+
+  double get mavenPercentageUsed {
+    // percentage used by maven compared to total size used
+    if (totalSizeUsedInGb == 0) return 0;
+    return ((totalMavenCacheSizeInGb / totalSizeUsedInGb) * 100)
+        .roundToDouble();
+  }
+
+  double get gradlePercentageUsed {
+    // percentage used by gradle compared to total size used
+    if (totalSizeUsedInGb == 0) return 0;
+    return ((totalGradleCacheSizeInGb / totalSizeUsedInGb) * 100)
+        .roundToDouble();
+  }
+
+  double get pubPercentageUsed {
+    // percentage used by pub compared to total size used
+    if (totalSizeUsedInGb == 0) return 0;
+    return ((totalPubCacheSizeInGb / totalSizeUsedInGb) * 100).roundToDouble();
+  }
+}
+
+@riverpod
+class HomePageViewModel extends _$HomePageViewModel {
+  @override
+  HomePageState build() {
+    return HomePageState.empty();
+  }
+
+  Future<void> fetchData() async {
+    final repository = ref.read(devCacheRepositoryProvider);
+    repository.fetchDockerSystemDf().then((dockerDfList) {
+      state = HomePageState(
+        dockerSystemDf: DockerSystemDfWrapper(dockerSystemDf: dockerDfList),
+        mavenLocal: state.mavenLocal,
+        gradleCache: state.gradleCache,
+        pubCache: state.pubCache,
+        projectCollection: state.projectCollection,
+      );
+    });
+
+    repository.fetchMavenLocal().then((mavenLocal) {
+      state = HomePageState(
+        dockerSystemDf: state.dockerSystemDf,
+        mavenLocal: mavenLocal,
+        gradleCache: state.gradleCache,
+        pubCache: state.pubCache,
+        projectCollection: state.projectCollection,
+      );
+    });
+
+    repository.fetchGradleCache().then((gradleCache) {
+      state = HomePageState(
+        dockerSystemDf: state.dockerSystemDf,
+        mavenLocal: state.mavenLocal,
+        gradleCache: gradleCache,
+        pubCache: state.pubCache,
+        projectCollection: state.projectCollection,
+      );
+    });
+
+    repository.fetchPubCache().then((pubCache) {
+      state = HomePageState(
+        dockerSystemDf: state.dockerSystemDf,
+        mavenLocal: state.mavenLocal,
+        gradleCache: state.gradleCache,
+        pubCache: pubCache,
+        projectCollection: state.projectCollection,
+      );
+    });
+
+    repository.fetchProjects('development').then((projects) {
+      state = HomePageState(
+        dockerSystemDf: state.dockerSystemDf,
+        mavenLocal: state.mavenLocal,
+        gradleCache: state.gradleCache,
+        pubCache: state.pubCache,
+        projectCollection: projects,
+      );
+    });
+  }
+
+  void fetchProjects() {
+    state = HomePageState(
+      dockerSystemDf: state.dockerSystemDf,
+      mavenLocal: state.mavenLocal,
+      gradleCache: state.gradleCache,
+      pubCache: state.pubCache,
+      projectCollection: DevProjectCollection(projects: []),
+    );
+    final repository = ref.read(devCacheRepositoryProvider);
+    repository.fetchProjects('development').then((projects) {
+      state = HomePageState(
+        dockerSystemDf: state.dockerSystemDf,
+        mavenLocal: state.mavenLocal,
+        gradleCache: state.gradleCache,
+        pubCache: state.pubCache,
+        projectCollection: projects,
+      );
+    });
+  }
+}
