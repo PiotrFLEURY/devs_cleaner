@@ -1,5 +1,7 @@
 # build_buster
 
+![Screenshot](docs/screen.png)
+
 Disk utiliy tool for developpers.
 
 ## Getting Started
