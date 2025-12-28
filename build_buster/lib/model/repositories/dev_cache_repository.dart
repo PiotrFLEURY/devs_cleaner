@@ -42,6 +42,10 @@ class DevCacheRepository {
     return helperSource.deleteBuildArtifacts(projectPath);
   }
 
+  Future<bool> deleteAllBuildArtifacts(String path) {
+    return helperSource.deleteAllBuildArtifacts(path);
+  }
+
   Future<bool> deletePubCache() {
     return helperSource.deletePubCache();
   }

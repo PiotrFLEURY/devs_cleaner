@@ -227,6 +227,17 @@ class HomePageViewModel extends _$HomePageViewModel {
     }
   }
 
+  Future<void> deleteAllBuildArtifacts() async {
+    final repository = ref.read(devCacheRepositoryProvider);
+    final success = await repository.deleteAllBuildArtifacts(
+      state.projectsPath,
+    );
+    if (success) {
+      // Refresh projects after deletion
+      fetchProjects(state.projectsPath);
+    }
+  }
+
   Future<void> deleteMavenLocal() async {
     final repository = ref.read(devCacheRepositoryProvider);
     final success = await repository.deleteMavenLocal();

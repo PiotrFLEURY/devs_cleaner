@@ -41,4 +41,7 @@ abstract class HelperSource {
 
   @DELETE('/projects')
   Future<bool> deleteBuildArtifacts(@Query("projectPath") String projectPath);
+
+  @DELETE('/projects/all')
+  Future<bool> deleteAllBuildArtifacts(@Query("path") String path);
 }

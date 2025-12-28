@@ -94,7 +94,13 @@ class Projects extends ConsumerWidget {
               style: TextStyle(color: AppTheme.secondaryText),
             ),
             ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                confirmProjectCleanup(context, viewModel.projectsPath, () {
+                  ref
+                      .read(homePageViewModelProvider.notifier)
+                      .deleteAllBuildArtifacts();
+                });
+              },
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppTheme.errorRed,
                 foregroundColor: AppTheme.mainText,
@@ -192,7 +198,7 @@ class Projects extends ConsumerWidget {
         return AlertDialog(
           title: Text('Confirm Cleanup'),
           content: Text(
-            'Are you sure you want to delete build artifacts for project $projectPath ?',
+            'Are you sure you want to delete build artifacts in $projectPath ?',
           ),
           actions: [
             TextButton(

@@ -23,6 +23,7 @@ pub fn create_router() -> Router {
         .route("/pubCache", delete(delete_pub_cache))
         .route("/projects/", get(get_project_list))
         .route("/projects", delete(delete_project_build))
+        .route("/projects/all", delete(delete_all_projects_build))
         .fallback(get(|| async { "Not Found" }))
 }
 
@@ -81,6 +82,17 @@ pub async fn delete_project_build(Query(params): Query<HashMap<String, String>>)
         None => return Json(false),
     };
     let result = listing::delete_project_build_artifacts(&path);
+    Json(result)
+}
+
+pub async fn delete_all_projects_build(
+    Query(params): Query<HashMap<String, String>>,
+) -> Json<bool> {
+    let path = match params.get("path") {
+        Some(p) => p,
+        None => return Json(false),
+    };
+    let result = listing::delete_all_projects_build_artifacts(&path);
     Json(result)
 }
 

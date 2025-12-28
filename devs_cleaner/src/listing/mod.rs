@@ -300,7 +300,7 @@ pub fn delete_project_build_artifacts(path: &str) -> bool {
                 "No build artifacts found at {}",
                 build_artifact_path.display()
             );
-            return false;
+            return true;
         }
     } else {
         println!("Technology could not be identified for path: {}", path);
@@ -400,4 +400,16 @@ pub fn delete_docker_cache() -> bool {
             false
         }
     }
+}
+
+pub fn delete_all_projects_build_artifacts(path: &str) -> bool {
+    let projects = list_projects(path);
+    let mut all_success = true;
+    for project in projects.projects {
+        let result = delete_project_build_artifacts(&project.path);
+        if !result {
+            all_success = false;
+        }
+    }
+    all_success
 }
