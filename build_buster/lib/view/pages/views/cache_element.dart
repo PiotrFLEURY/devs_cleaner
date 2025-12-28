@@ -10,6 +10,8 @@ class CacheElement extends StatelessWidget {
     required this.color,
     required this.buttonLabel,
     required this.onClean,
+    required this.onRefresh,
+    this.onOpen,
   });
 
   final String label;
@@ -18,11 +20,14 @@ class CacheElement extends StatelessWidget {
   final Color color;
   final String buttonLabel;
   final VoidCallback onClean;
+  final VoidCallback onRefresh;
+  final VoidCallback? onOpen;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(16.0),
+      height: 300,
+      padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 32.0),
       decoration: BoxDecoration(
         color: color,
         borderRadius: BorderRadius.circular(8.0),
@@ -73,13 +78,30 @@ class CacheElement extends StatelessWidget {
             textAlign: TextAlign.center,
             style: TextStyle(color: AppTheme.mainText, fontSize: 18),
           ),
-          ElevatedButton(
-            onPressed: onClean,
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.white.withAlpha(10),
-              foregroundColor: AppTheme.mainText,
-            ),
-            child: Text(buttonLabel),
+          Row(
+            children: [
+              IconButton(
+                onPressed: onRefresh,
+                icon: Icon(Icons.refresh, color: AppTheme.mainText, size: 20),
+              ),
+              IconButton(
+                icon: Icon(
+                  Icons.cleaning_services_outlined,
+                  color: AppTheme.mainText,
+                  size: 20,
+                ),
+                onPressed: onClean,
+              ),
+              if (onOpen != null)
+                IconButton(
+                  onPressed: onOpen,
+                  icon: Icon(
+                    Icons.info_outline,
+                    color: AppTheme.mainText,
+                    size: 20,
+                  ),
+                ),
+            ],
           ),
         ],
       ),

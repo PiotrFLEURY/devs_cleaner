@@ -2,6 +2,7 @@ import 'package:build_buster/model/data/dev_project.dart';
 import 'package:build_buster/model/data/docker_system_df.dart';
 import 'package:build_buster/model/data/gradle_cache.dart';
 import 'package:build_buster/model/data/maven_local.dart';
+import 'package:build_buster/model/data/npm_cache.dart';
 import 'package:build_buster/model/data/pub_cache.dart';
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
@@ -35,6 +36,12 @@ abstract class HelperSource {
 
   @DELETE('/pubCache')
   Future<bool> deletePubCache();
+
+  @GET('/npmCache')
+  Future<NpmCache> fetchNpmCache();
+
+  @DELETE('/npmCache')
+  Future<bool> deleteNpmCache();
 
   @GET('/projects/')
   Future<DevProjectCollection> fetchProjects(@Query("path") String path);

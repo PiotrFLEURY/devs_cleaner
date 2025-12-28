@@ -105,3 +105,10 @@ pub struct PubCache {
     #[serde(rename = "totalSizeInBytes")]
     pub total_size_in_bytes: u64,
 }
+
+#[derive(Debug, serde::Deserialize, serde::Serialize)]
+pub struct NpmCache {
+    pub path: String,
+    #[serde(rename = "totalSizeInBytes")]
+    pub total_size_in_bytes: u64,
+}

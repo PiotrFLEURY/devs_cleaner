@@ -35,7 +35,7 @@ class Caches extends ConsumerWidget {
         SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: Row(
-            spacing: 32.0,
+            spacing: 16.0,
             children: [
               CacheElement(
                 label: 'Docker Images &\nVolumes',
@@ -49,6 +49,15 @@ class Caches extends ConsumerWidget {
                         .read(homePageViewModelProvider.notifier)
                         .deleteDockerCache();
                   });
+                },
+                onRefresh: () {
+                  ref
+                      .read(homePageViewModelProvider.notifier)
+                      .refreshDockerCache();
+                },
+                onOpen: () {
+                  // Open Docker cache details page
+                  _openDockerCacheDetails(context, viewModel.dockerSystemDf);
                 },
               ),
               CacheElement(
@@ -64,6 +73,11 @@ class Caches extends ConsumerWidget {
                         .deleteMavenLocal();
                   });
                 },
+                onRefresh: () {
+                  ref
+                      .read(homePageViewModelProvider.notifier)
+                      .refreshMavenLocal();
+                },
               ),
               CacheElement(
                 label: 'Gradle Build\nCache',
@@ -78,6 +92,11 @@ class Caches extends ConsumerWidget {
                         .deleteGradleCache();
                   });
                 },
+                onRefresh: () {
+                  ref
+                      .read(homePageViewModelProvider.notifier)
+                      .refreshGradleCache();
+                },
               ),
               CacheElement(
                 label: 'Pub Global Cache\n(Dart/Flutter)',
@@ -91,6 +110,30 @@ class Caches extends ConsumerWidget {
                         .read(homePageViewModelProvider.notifier)
                         .deletePubCache();
                   });
+                },
+                onRefresh: () {
+                  ref
+                      .read(homePageViewModelProvider.notifier)
+                      .refreshPubCache();
+                },
+              ),
+              CacheElement(
+                label: 'Npm Cache',
+                percentage: viewModel.npmPercentageUsed,
+                diskUsageGb: viewModel.npmCacheToFormattedString(),
+                color: AppTheme.yellowNpm,
+                buttonLabel: 'Clean Npm Cache',
+                onClean: () {
+                  confirmCacheCleanup(context, 'Npm', () {
+                    ref
+                        .read(homePageViewModelProvider.notifier)
+                        .deleteNpmCache();
+                  });
+                },
+                onRefresh: () {
+                  ref
+                      .read(homePageViewModelProvider.notifier)
+                      .refreshNpmCache();
                 },
               ),
             ],
@@ -126,6 +169,78 @@ class Caches extends ConsumerWidget {
               child: Text('Confirm'),
             ),
           ],
+        );
+      },
+    );
+  }
+
+  void _openDockerCacheDetails(
+    BuildContext context,
+    DockerSystemDfWrapper dockerCache,
+  ) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Docker Cache Details'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Close'),
+            ),
+          ],
+          content: Container(
+            padding: EdgeInsets.all(16.0),
+            child: Column(
+              spacing: 8.0,
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('Images Size:'),
+                    Text(
+                      dockerCache.imagesSize,
+                      style: TextStyle(color: AppTheme.secondaryText),
+                    ),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('Containers Size:'),
+                    Text(
+                      dockerCache.containersSize,
+                      style: TextStyle(color: AppTheme.secondaryText),
+                    ),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('Volumes Size:'),
+                    Text(
+                      dockerCache.volumesSize,
+                      style: TextStyle(color: AppTheme.secondaryText),
+                    ),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('Build Cache Size:'),
+                    Text(
+                      dockerCache.buildCacheSize,
+                      style: TextStyle(color: AppTheme.secondaryText),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
         );
       },
     );

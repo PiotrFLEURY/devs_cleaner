@@ -2,6 +2,7 @@ import 'package:build_buster/model/data/dev_project.dart';
 import 'package:build_buster/model/data/docker_system_df.dart';
 import 'package:build_buster/model/data/gradle_cache.dart';
 import 'package:build_buster/model/data/maven_local.dart';
+import 'package:build_buster/model/data/npm_cache.dart';
 import 'package:build_buster/model/data/pub_cache.dart';
 import 'package:build_buster/model/sources/helper_source.dart';
 
@@ -32,6 +33,14 @@ class DevCacheRepository {
 
   Future<PubCache> fetchPubCache() {
     return helperSource.fetchPubCache();
+  }
+
+  Future<NpmCache> fetchNpmCache() {
+    return helperSource.fetchNpmCache();
+  }
+
+  Future<bool> deleteNpmCache() {
+    return helperSource.deleteNpmCache();
   }
 
   Future<DevProjectCollection> fetchProjects(String path) {

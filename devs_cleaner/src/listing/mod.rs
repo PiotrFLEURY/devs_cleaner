@@ -3,7 +3,8 @@ use std::{env::home_dir, path};
 use walkdir::WalkDir;
 
 use crate::models::{
-    DevProject, DockerSystemDf, GradleCache, MavenCache, ProjectCollection, PubCache, Technology,
+    DevProject, DockerSystemDf, GradleCache, MavenCache, NpmCache, ProjectCollection, PubCache,
+    Technology,
 };
 
 pub fn list_projects(path_str: &str) -> ProjectCollection {
@@ -412,4 +413,70 @@ pub fn delete_all_projects_build_artifacts(path: &str) -> bool {
         }
     }
     all_success
+}
+
+pub fn npm_cache() -> NpmCache {
+    // ~/.npm
+    let npm_cache_path = home_dir()
+        .map(|home| home.join(".npm"))
+        .filter(|path| path.exists())
+        .map(|path| path.to_string_lossy().to_string())
+        .unwrap_or_else(|| "NPM cache not found".to_string());
+
+    println!("Calculating NPM cache size at {}", npm_cache_path);
+
+    let mut total_size_in_bytes: u64 = 0;
+
+    for result in WalkDir::new(&npm_cache_path) {
+        match result {
+            Ok(entry) => {
+                let entry = entry;
+                println!(
+                    "Visiting: {} of size {}",
+                    entry.path().display(),
+                    entry.metadata().map(|m| m.len()).unwrap_or(0)
+                );
+                if let Ok(metadata) = entry.metadata() {
+                    if metadata.is_file() {
+                        total_size_in_bytes += metadata.len();
+                    }
+                }
+            }
+            Err(e) => {
+                eprintln!("Error reading entry: {}", e);
+            }
+        }
+    }
+
+    NpmCache {
+        path: npm_cache_path,
+        total_size_in_bytes,
+    }
+}
+
+pub fn delete_npm_cache() -> bool {
+    // Run npm cache clean --force
+    let output = std::process::Command::new("npm")
+        .arg("cache")
+        .arg("clean")
+        .arg("--force")
+        .output();
+    match output {
+        Ok(output) => {
+            if output.status.success() {
+                println!("Successfully deleted NPM cache.");
+                true
+            } else {
+                eprintln!(
+                    "Failed to delete NPM cache: {}",
+                    String::from_utf8_lossy(&output.stderr)
+                );
+                false
+            }
+        }
+        Err(e) => {
+            eprintln!("Error executing npm command: {}", e);
+            false
+        }
+    }
 }

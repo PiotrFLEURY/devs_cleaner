@@ -13,6 +13,7 @@ class AppTheme {
   static const Color mavenOrange = Color(0xFFE67E22);
   static const Color greenGradle = Color(0xFF2ECC71);
   static const Color violetPub = Color(0xFF9B59B6);
+  static const Color yellowNpm = Color(0xFFF1C40F);
 
   // Danger Colors
   static const Color errorRed = Color(0xFFE74C3C);

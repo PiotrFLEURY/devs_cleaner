@@ -8,7 +8,7 @@ use axum::{
 
 use crate::{
     listing,
-    models::{DockerSystemDf, GradleCache, MavenCache, ProjectCollection, PubCache},
+    models::{DockerSystemDf, GradleCache, MavenCache, NpmCache, ProjectCollection, PubCache},
 };
 
 pub fn create_router() -> Router {
@@ -21,6 +21,8 @@ pub fn create_router() -> Router {
         .route("/gradleCache", delete(delete_gradle_cache))
         .route("/pubCache", get(get_pub_cache))
         .route("/pubCache", delete(delete_pub_cache))
+        .route("/npmCache", get(get_npm_cache))
+        .route("/npmCache", delete(delete_npm_cache))
         .route("/projects/", get(get_project_list))
         .route("/projects", delete(delete_project_build))
         .route("/projects/all", delete(delete_all_projects_build))
@@ -63,6 +65,16 @@ pub async fn delete_gradle_cache() -> Json<bool> {
 pub async fn get_pub_cache() -> Json<PubCache> {
     let pub_cache = listing::pub_cache();
     Json(pub_cache)
+}
+
+pub async fn get_npm_cache() -> Json<NpmCache> {
+    let cache = listing::npm_cache();
+    Json(cache)
+}
+
+pub async fn delete_npm_cache() -> Json<bool> {
+    let result = listing::delete_npm_cache();
+    Json(result)
 }
 
 pub async fn get_project_list(

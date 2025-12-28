@@ -2,6 +2,7 @@ import 'package:build_buster/model/data/dev_project.dart';
 import 'package:build_buster/model/data/docker_system_df.dart';
 import 'package:build_buster/model/data/gradle_cache.dart';
 import 'package:build_buster/model/data/maven_local.dart';
+import 'package:build_buster/model/data/npm_cache.dart';
 import 'package:build_buster/model/data/pub_cache.dart';
 import 'package:build_buster/view_model/providers/dev_cache_repository_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -20,6 +21,28 @@ class DockerSystemDfWrapper {
   double get totalDockerCacheSizeInGb {
     return totalSizeInBytes / 1e9;
   }
+
+  String get imagesSize =>
+      dockerSystemDf.where((df) => df.type == 'Images').firstOrNull?.size ??
+      '0B';
+
+  String get containersSize =>
+      dockerSystemDf.where((df) => df.type == 'Containers').firstOrNull?.size ??
+      '0B';
+
+  String get volumesSize =>
+      dockerSystemDf
+          .where((df) => df.type == 'Local Volumes')
+          .firstOrNull
+          ?.size ??
+      '0B';
+
+  String get buildCacheSize =>
+      dockerSystemDf
+          .where((df) => df.type == 'Build Cache')
+          .firstOrNull
+          ?.size ??
+      '0B';
 
   int _parseInBytes(String sizeStr) {
     if (sizeStr.endsWith('GB')) {
@@ -40,6 +63,7 @@ class HomePageState {
     required this.mavenLocal,
     required this.gradleCache,
     required this.pubCache,
+    required this.npmCache,
     required this.projectsPath,
     required this.projectCollection,
   });
@@ -50,6 +74,7 @@ class HomePageState {
       mavenLocal: MavenLocal(path: '', totalSizeInBytes: 0),
       gradleCache: GradleCache(path: '', totalSizeInBytes: 0),
       pubCache: PubCache(path: '', totalSizeInBytes: 0),
+      npmCache: NpmCache(path: '', totalSizeInBytes: 0),
       projectsPath: '',
       projectCollection: DevProjectCollection(projects: []),
     );
@@ -60,6 +85,7 @@ class HomePageState {
     MavenLocal? mavenLocal,
     GradleCache? gradleCache,
     PubCache? pubCache,
+    NpmCache? npmCache,
     String? projectsPath,
     DevProjectCollection? projectCollection,
   }) {
@@ -68,6 +94,7 @@ class HomePageState {
       mavenLocal: mavenLocal ?? this.mavenLocal,
       gradleCache: gradleCache ?? this.gradleCache,
       pubCache: pubCache ?? this.pubCache,
+      npmCache: npmCache ?? this.npmCache,
       projectsPath: projectsPath ?? this.projectsPath,
       projectCollection: projectCollection ?? this.projectCollection,
     );
@@ -77,6 +104,7 @@ class HomePageState {
   MavenLocal mavenLocal;
   GradleCache gradleCache;
   PubCache pubCache;
+  NpmCache npmCache;
   String projectsPath = '';
   DevProjectCollection projectCollection;
 
@@ -114,6 +142,10 @@ class HomePageState {
     return toFormattedString(pubCache.totalSizeInBytes);
   }
 
+  String npmCacheToFormattedString() {
+    return toFormattedString(npmCache.totalSizeInBytes);
+  }
+
   double get totalMavenCacheSizeInGb {
     return mavenLocal.totalSizeInBytes / 1e9;
   }
@@ -126,11 +158,16 @@ class HomePageState {
     return pubCache.totalSizeInBytes / 1e9;
   }
 
+  double get totalNpmCacheSizeInGb {
+    return npmCache.totalSizeInBytes / 1e9;
+  }
+
   double get totalSizeUsedInGb {
     return dockerSystemDf.totalDockerCacheSizeInGb +
         totalMavenCacheSizeInGb +
         totalGradleCacheSizeInGb +
-        totalPubCacheSizeInGb;
+        totalPubCacheSizeInGb +
+        totalNpmCacheSizeInGb;
   }
 
   double get dockerPercentageUsed {
@@ -158,6 +195,12 @@ class HomePageState {
     // percentage used by pub compared to total size used
     if (totalSizeUsedInGb == 0) return 0;
     return ((totalPubCacheSizeInGb / totalSizeUsedInGb) * 100).roundToDouble();
+  }
+
+  double get npmPercentageUsed {
+    // percentage used by npm compared to total size used
+    if (totalSizeUsedInGb == 0) return 0;
+    return ((totalNpmCacheSizeInGb / totalSizeUsedInGb) * 100).roundToDouble();
   }
 
   double get totalProjectSizeInBytes => projectCollection.projects.fold(
@@ -208,6 +251,62 @@ class HomePageViewModel extends _$HomePageViewModel {
     repository.fetchPubCache().then((pubCache) {
       state = state.copyWith(pubCache: pubCache);
     });
+
+    repository.fetchNpmCache().then((npmCache) {
+      state = state.copyWith(npmCache: npmCache);
+    });
+  }
+
+  void refreshDockerCache() {
+    state = state.copyWith(
+      dockerSystemDf: DockerSystemDfWrapper(dockerSystemDf: []),
+    );
+    final repository = ref.read(devCacheRepositoryProvider);
+    repository.fetchDockerSystemDf().then((dockerDfList) {
+      state = state.copyWith(
+        dockerSystemDf: DockerSystemDfWrapper(dockerSystemDf: dockerDfList),
+      );
+    });
+  }
+
+  void refreshMavenLocal() {
+    state = state.copyWith(
+      mavenLocal: MavenLocal(path: '', totalSizeInBytes: 0),
+    );
+    final repository = ref.read(devCacheRepositoryProvider);
+    repository.fetchMavenLocal().then((mavenLocal) {
+      state = state.copyWith(mavenLocal: mavenLocal);
+    });
+  }
+
+  void refreshGradleCache() {
+    state = state.copyWith(
+      gradleCache: GradleCache(path: '', totalSizeInBytes: 0),
+    );
+    final repository = ref.read(devCacheRepositoryProvider);
+    repository.fetchGradleCache().then((gradleCache) {
+      state = state.copyWith(gradleCache: gradleCache);
+    });
+  }
+
+  void refreshPubCache() {
+    state = state.copyWith(pubCache: PubCache(path: '', totalSizeInBytes: 0));
+    final repository = ref.read(devCacheRepositoryProvider);
+    repository.fetchPubCache().then((pubCache) {
+      state = state.copyWith(pubCache: pubCache);
+    });
+  }
+
+  void refreshNpmCache() {
+    state = state.copyWith(npmCache: NpmCache(path: '', totalSizeInBytes: 0));
+    final repository = ref.read(devCacheRepositoryProvider);
+    repository.fetchNpmCache().then((npmCache) {
+      state = state.copyWith(npmCache: npmCache);
+    });
+  }
+
+  void refreshProjects() {
+    fetchProjects(state.projectsPath);
   }
 
   void fetchProjects(String path) {
@@ -267,6 +366,17 @@ class HomePageViewModel extends _$HomePageViewModel {
       // Refresh pub cache after deletion
       repository.fetchPubCache().then((pubCache) {
         state = state.copyWith(pubCache: pubCache);
+      });
+    }
+  }
+
+  Future<void> deleteNpmCache() async {
+    final repository = ref.read(devCacheRepositoryProvider);
+    final success = await repository.deleteNpmCache();
+    if (success) {
+      // Refresh npm cache after deletion
+      repository.fetchNpmCache().then((npmCache) {
+        state = state.copyWith(npmCache: npmCache);
       });
     }
   }

@@ -15,9 +15,19 @@ class Projects extends ConsumerWidget {
       spacing: 16.0,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'Projects',
-          style: TextStyle(color: AppTheme.mainText, fontSize: 24),
+        Row(
+          children: [
+            Text(
+              'Projects',
+              style: TextStyle(color: AppTheme.mainText, fontSize: 24),
+            ),
+            IconButton(
+              onPressed: () {
+                ref.read(homePageViewModelProvider.notifier).refreshProjects();
+              },
+              icon: Icon(Icons.refresh),
+            ),
+          ],
         ),
         Row(
           children: [
