@@ -4,24 +4,11 @@ import 'package:build_buster/view_model/home_page_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class Caches extends ConsumerStatefulWidget {
+class Caches extends ConsumerWidget {
   const Caches({super.key});
 
   @override
-  ConsumerState<Caches> createState() => _CachesState();
-}
-
-class _CachesState extends ConsumerState<Caches> {
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(homePageViewModelProvider.notifier).fetchData();
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final viewModel = ref.watch(homePageViewModelProvider);
     return Column(
       spacing: 24.0,
@@ -35,7 +22,6 @@ class _CachesState extends ConsumerState<Caches> {
             ),
             IconButton(
               onPressed: () {
-                ref.invalidate(homePageViewModelProvider);
                 ref.read(homePageViewModelProvider.notifier).fetchData();
               },
               icon: Icon(Icons.refresh),

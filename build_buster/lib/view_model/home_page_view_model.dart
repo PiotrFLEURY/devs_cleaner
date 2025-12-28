@@ -55,6 +55,24 @@ class HomePageState {
     );
   }
 
+  HomePageState copyWith({
+    DockerSystemDfWrapper? dockerSystemDf,
+    MavenLocal? mavenLocal,
+    GradleCache? gradleCache,
+    PubCache? pubCache,
+    String? projectsPath,
+    DevProjectCollection? projectCollection,
+  }) {
+    return HomePageState(
+      dockerSystemDf: dockerSystemDf ?? this.dockerSystemDf,
+      mavenLocal: mavenLocal ?? this.mavenLocal,
+      gradleCache: gradleCache ?? this.gradleCache,
+      pubCache: pubCache ?? this.pubCache,
+      projectsPath: projectsPath ?? this.projectsPath,
+      projectCollection: projectCollection ?? this.projectCollection,
+    );
+  }
+
   DockerSystemDfWrapper dockerSystemDf;
   MavenLocal mavenLocal;
   GradleCache gradleCache;
@@ -152,6 +170,10 @@ class HomePageState {
       mavenLocal.totalSizeInBytes +
       gradleCache.totalSizeInBytes +
       pubCache.totalSizeInBytes;
+
+  String shortenPath(String path) {
+    return path.replaceFirst(projectsPath, '');
+  }
 }
 
 @riverpod
@@ -162,71 +184,37 @@ class HomePageViewModel extends _$HomePageViewModel {
   }
 
   Future<void> fetchData() async {
+    state = state.copyWith(
+      dockerSystemDf: DockerSystemDfWrapper(dockerSystemDf: []),
+      mavenLocal: MavenLocal(path: '', totalSizeInBytes: 0),
+      gradleCache: GradleCache(path: '', totalSizeInBytes: 0),
+      pubCache: PubCache(path: '', totalSizeInBytes: 0),
+    );
     final repository = ref.read(devCacheRepositoryProvider);
     repository.fetchDockerSystemDf().then((dockerDfList) {
-      state = HomePageState(
+      state = state.copyWith(
         dockerSystemDf: DockerSystemDfWrapper(dockerSystemDf: dockerDfList),
-        mavenLocal: state.mavenLocal,
-        gradleCache: state.gradleCache,
-        pubCache: state.pubCache,
-        projectsPath: state.projectsPath,
-        projectCollection: state.projectCollection,
       );
     });
 
     repository.fetchMavenLocal().then((mavenLocal) {
-      state = HomePageState(
-        dockerSystemDf: state.dockerSystemDf,
-        mavenLocal: mavenLocal,
-        gradleCache: state.gradleCache,
-        pubCache: state.pubCache,
-        projectsPath: state.projectsPath,
-        projectCollection: state.projectCollection,
-      );
+      state = state.copyWith(mavenLocal: mavenLocal);
     });
 
     repository.fetchGradleCache().then((gradleCache) {
-      state = HomePageState(
-        dockerSystemDf: state.dockerSystemDf,
-        mavenLocal: state.mavenLocal,
-        gradleCache: gradleCache,
-        pubCache: state.pubCache,
-        projectsPath: state.projectsPath,
-        projectCollection: state.projectCollection,
-      );
+      state = state.copyWith(gradleCache: gradleCache);
     });
 
     repository.fetchPubCache().then((pubCache) {
-      state = HomePageState(
-        dockerSystemDf: state.dockerSystemDf,
-        mavenLocal: state.mavenLocal,
-        gradleCache: state.gradleCache,
-        pubCache: pubCache,
-        projectsPath: state.projectsPath,
-        projectCollection: state.projectCollection,
-      );
+      state = state.copyWith(pubCache: pubCache);
     });
   }
 
   void fetchProjects(String path) {
-    state = HomePageState(
-      dockerSystemDf: state.dockerSystemDf,
-      mavenLocal: state.mavenLocal,
-      gradleCache: state.gradleCache,
-      pubCache: state.pubCache,
-      projectsPath: path,
-      projectCollection: DevProjectCollection(projects: []),
-    );
+    state = state.copyWith(projectsPath: path);
     final repository = ref.read(devCacheRepositoryProvider);
     repository.fetchProjects(path).then((projects) {
-      state = HomePageState(
-        dockerSystemDf: state.dockerSystemDf,
-        mavenLocal: state.mavenLocal,
-        gradleCache: state.gradleCache,
-        pubCache: state.pubCache,
-        projectsPath: state.projectsPath,
-        projectCollection: projects,
-      );
+      state = state.copyWith(projectCollection: projects);
     });
   }
 
@@ -245,14 +233,7 @@ class HomePageViewModel extends _$HomePageViewModel {
     if (success) {
       // Refresh maven local after deletion
       repository.fetchMavenLocal().then((mavenLocal) {
-        state = HomePageState(
-          dockerSystemDf: state.dockerSystemDf,
-          mavenLocal: mavenLocal,
-          gradleCache: state.gradleCache,
-          pubCache: state.pubCache,
-          projectsPath: state.projectsPath,
-          projectCollection: state.projectCollection,
-        );
+        state = state.copyWith(mavenLocal: mavenLocal);
       });
     }
   }
@@ -263,14 +244,7 @@ class HomePageViewModel extends _$HomePageViewModel {
     if (success) {
       // Refresh gradle cache after deletion
       repository.fetchGradleCache().then((gradleCache) {
-        state = HomePageState(
-          dockerSystemDf: state.dockerSystemDf,
-          mavenLocal: state.mavenLocal,
-          gradleCache: gradleCache,
-          pubCache: state.pubCache,
-          projectsPath: state.projectsPath,
-          projectCollection: state.projectCollection,
-        );
+        state = state.copyWith(gradleCache: gradleCache);
       });
     }
   }
@@ -281,14 +255,7 @@ class HomePageViewModel extends _$HomePageViewModel {
     if (success) {
       // Refresh pub cache after deletion
       repository.fetchPubCache().then((pubCache) {
-        state = HomePageState(
-          dockerSystemDf: state.dockerSystemDf,
-          mavenLocal: state.mavenLocal,
-          gradleCache: state.gradleCache,
-          pubCache: pubCache,
-          projectsPath: state.projectsPath,
-          projectCollection: state.projectCollection,
-        );
+        state = state.copyWith(pubCache: pubCache);
       });
     }
   }
@@ -299,13 +266,8 @@ class HomePageViewModel extends _$HomePageViewModel {
     if (success) {
       // Refresh docker cache after deletion
       repository.fetchDockerSystemDf().then((dockerDfList) {
-        state = HomePageState(
+        state = state.copyWith(
           dockerSystemDf: DockerSystemDfWrapper(dockerSystemDf: dockerDfList),
-          mavenLocal: state.mavenLocal,
-          gradleCache: state.gradleCache,
-          pubCache: state.pubCache,
-          projectsPath: state.projectsPath,
-          projectCollection: state.projectCollection,
         );
       });
     }

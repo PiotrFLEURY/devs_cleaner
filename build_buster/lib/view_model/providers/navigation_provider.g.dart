@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'home_page_view_model.dart';
+part of 'navigation_provider.dart';
 
 // **************************************************************************
 // RiverpodGenerator
@@ -9,52 +9,52 @@ part of 'home_page_view_model.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
-@ProviderFor(HomePageViewModel)
-const homePageViewModelProvider = HomePageViewModelProvider._();
+@ProviderFor(Navigation)
+const navigationProvider = NavigationProvider._();
 
-final class HomePageViewModelProvider
-    extends $NotifierProvider<HomePageViewModel, HomePageState> {
-  const HomePageViewModelProvider._()
+final class NavigationProvider
+    extends $NotifierProvider<Navigation, NavigationItem> {
+  const NavigationProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
-        name: r'homePageViewModelProvider',
+        name: r'navigationProvider',
         isAutoDispose: true,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
 
   @override
-  String debugGetCreateSourceHash() => _$homePageViewModelHash();
+  String debugGetCreateSourceHash() => _$navigationHash();
 
   @$internal
   @override
-  HomePageViewModel create() => HomePageViewModel();
+  Navigation create() => Navigation();
 
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(HomePageState value) {
+  Override overrideWithValue(NavigationItem value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $SyncValueProvider<HomePageState>(value),
+      providerOverride: $SyncValueProvider<NavigationItem>(value),
     );
   }
 }
 
-String _$homePageViewModelHash() => r'c7949359546705c98343a63b9235f2b841e3b7fc';
+String _$navigationHash() => r'9975be4757ce9337158a51de2ad14ef4367bf84b';
 
-abstract class _$HomePageViewModel extends $Notifier<HomePageState> {
-  HomePageState build();
+abstract class _$Navigation extends $Notifier<NavigationItem> {
+  NavigationItem build();
   @$mustCallSuper
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<HomePageState, HomePageState>;
+    final ref = this.ref as $Ref<NavigationItem, NavigationItem>;
     final element =
         ref.element
             as $ClassProviderElement<
-              AnyNotifier<HomePageState, HomePageState>,
-              HomePageState,
+              AnyNotifier<NavigationItem, NavigationItem>,
+              NavigationItem,
               Object?,
               Object?
             >;

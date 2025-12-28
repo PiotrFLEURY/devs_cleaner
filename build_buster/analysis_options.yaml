@@ -10,8 +10,13 @@
 include: package:flutter_lints/flutter.yaml
 
 analyzer:
+  plugins:
+    - riverpod_lint
   errors:
     invalid_annotation_target: ignore
+
+plugins:
+  riverpod_lint: 3.1.0
 
 linter:
   # The lint rules applied to this project can be customized in the

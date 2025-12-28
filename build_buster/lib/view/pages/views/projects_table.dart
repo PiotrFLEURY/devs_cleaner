@@ -50,6 +50,7 @@ class Projects extends ConsumerWidget {
                         style: TextStyle(
                           color: AppTheme.mainText,
                           fontWeight: FontWeight.bold,
+                          fontSize: 12,
                         ),
                       ),
                     ),
@@ -60,6 +61,7 @@ class Projects extends ConsumerWidget {
                         style: TextStyle(
                           color: AppTheme.mainText,
                           fontWeight: FontWeight.bold,
+                          fontSize: 12,
                         ),
                       ),
                     ),
@@ -70,6 +72,7 @@ class Projects extends ConsumerWidget {
                         style: TextStyle(
                           color: AppTheme.mainText,
                           fontWeight: FontWeight.bold,
+                          fontSize: 12,
                         ),
                       ),
                     ),
@@ -117,8 +120,8 @@ class Projects extends ConsumerWidget {
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(
-              project.path,
-              style: TextStyle(color: AppTheme.secondaryText),
+              viewModel.shortenPath(project.path),
+              style: TextStyle(color: AppTheme.secondaryText, fontSize: 12),
             ),
           ),
         ),
@@ -128,7 +131,7 @@ class Projects extends ConsumerWidget {
             padding: const EdgeInsets.all(8.0),
             child: Text(
               project.technology,
-              style: TextStyle(color: AppTheme.secondaryText),
+              style: TextStyle(color: AppTheme.secondaryText, fontSize: 12),
             ),
           ),
         ),
@@ -140,7 +143,7 @@ class Projects extends ConsumerWidget {
               children: [
                 Text(
                   viewModel.toFormattedString(project.sizeInBytes),
-                  style: TextStyle(color: AppTheme.secondaryText),
+                  style: TextStyle(color: AppTheme.secondaryText, fontSize: 12),
                 ),
                 Spacer(),
                 if (project.hasBuildArtifact)
