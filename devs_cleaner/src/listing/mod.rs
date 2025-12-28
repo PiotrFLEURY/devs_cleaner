@@ -18,6 +18,14 @@ pub fn list_projects(path_str: &str) -> ProjectCollection {
                     entry.path().display(),
                     entry.metadata().map(|m| m.len()).unwrap_or(0)
                 );
+                if (entry.path().to_string_lossy().contains(".git")
+                    || entry.path().to_string_lossy().contains("node_modules"))
+                    && entry.file_type().is_dir()
+                {
+                    // Skip .git and node_modules directories
+                    println!("Skipping directory: {}", entry.path().display());
+                    continue;
+                }
                 if let Some(dev_project) = to_project(&entry) {
                     project_collection.push(dev_project);
                 }
@@ -268,8 +276,61 @@ pub fn pub_cache() -> PubCache {
     }
 }
 
+fn run_clean_command_for_technology(technology: &Technology, path: &str) -> bool {
+    match technology {
+        Technology::Flutter => {
+            run_clean_command(path, "flutter", &["clean"]);
+            true
+        }
+        Technology::JavaScript => false,
+        Technology::Rust => {
+            run_clean_command(path, "cargo", &["clean"]);
+            true
+        }
+        Technology::Maven => {
+            run_clean_command(path, "./mvnw", &["clean"]);
+            true
+        }
+        Technology::Gradle => {
+            run_clean_command(path, "./gradlew", &["clean"]);
+            true
+        }
+    }
+}
+
+fn run_clean_command(path: &str, command: &str, args: &[&str]) {
+    let output = std::process::Command::new(command)
+        .args(args)
+        .current_dir(path)
+        .output();
+
+    match output {
+        Ok(output) => {
+            if output.status.success() {
+                println!(
+                    "Successfully ran clean command in {}: {}",
+                    path,
+                    String::from_utf8_lossy(&output.stdout)
+                );
+            } else {
+                eprintln!(
+                    "Failed to run clean command in {}: {}",
+                    path,
+                    String::from_utf8_lossy(&output.stderr)
+                );
+            }
+        }
+        Err(e) => {
+            eprintln!("Error executing command in {}: {}", path, e);
+        }
+    }
+}
+
 pub fn delete_project_build_artifacts(path: &str) -> bool {
     if let Some(technology) = identify_technology(path) {
+        if has_built_artifacts(&technology, path) {
+            run_clean_command_for_technology(&technology, path);
+        }
         let build_artifact_path = match technology {
             Technology::Flutter => path::Path::new(path).join("build"),
             Technology::JavaScript => path::Path::new(path).join("node_modules"),

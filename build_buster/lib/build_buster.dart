@@ -6,6 +6,6 @@ class BuildBuster extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(home: HomePage());
+    return MaterialApp(title: 'Build Buster', home: HomePage());
   }
 }
