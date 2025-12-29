@@ -26,6 +26,7 @@ pub fn create_router() -> Router {
         .route("/projects/", get(get_project_list))
         .route("/projects", delete(delete_project_build))
         .route("/projects/all", delete(delete_all_projects_build))
+        .route("/shutdown", get(shutdown_server))
         .fallback(get(|| async { "Not Found" }))
 }
 
@@ -111,4 +112,8 @@ pub async fn delete_all_projects_build(
 pub async fn delete_pub_cache() -> Json<bool> {
     let result = listing::delete_pub_cache();
     Json(result)
+}
+
+pub async fn shutdown_server() -> Json<bool> {
+    std::process::exit(0);
 }

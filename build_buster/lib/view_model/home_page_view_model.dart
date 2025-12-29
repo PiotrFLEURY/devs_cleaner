@@ -162,7 +162,7 @@ class HomePageState {
     return npmCache.totalSizeInBytes / 1e9;
   }
 
-  double get totalSizeUsedInGb {
+  double get totalCacheSizeUsedInGb {
     return dockerSystemDf.totalDockerCacheSizeInGb +
         totalMavenCacheSizeInGb +
         totalGradleCacheSizeInGb +
@@ -172,35 +172,38 @@ class HomePageState {
 
   double get dockerPercentageUsed {
     // percentage used by docker compared to total size used
-    if (totalSizeUsedInGb == 0) return 0;
-    return ((dockerSystemDf.totalDockerCacheSizeInGb / totalSizeUsedInGb) * 100)
+    if (totalCacheSizeUsedInGb == 0) return 0;
+    return ((dockerSystemDf.totalDockerCacheSizeInGb / totalCacheSizeUsedInGb) *
+            100)
         .roundToDouble();
   }
 
   double get mavenPercentageUsed {
     // percentage used by maven compared to total size used
-    if (totalSizeUsedInGb == 0) return 0;
-    return ((totalMavenCacheSizeInGb / totalSizeUsedInGb) * 100)
+    if (totalCacheSizeUsedInGb == 0) return 0;
+    return ((totalMavenCacheSizeInGb / totalCacheSizeUsedInGb) * 100)
         .roundToDouble();
   }
 
   double get gradlePercentageUsed {
     // percentage used by gradle compared to total size used
-    if (totalSizeUsedInGb == 0) return 0;
-    return ((totalGradleCacheSizeInGb / totalSizeUsedInGb) * 100)
+    if (totalCacheSizeUsedInGb == 0) return 0;
+    return ((totalGradleCacheSizeInGb / totalCacheSizeUsedInGb) * 100)
         .roundToDouble();
   }
 
   double get pubPercentageUsed {
     // percentage used by pub compared to total size used
-    if (totalSizeUsedInGb == 0) return 0;
-    return ((totalPubCacheSizeInGb / totalSizeUsedInGb) * 100).roundToDouble();
+    if (totalCacheSizeUsedInGb == 0) return 0;
+    return ((totalPubCacheSizeInGb / totalCacheSizeUsedInGb) * 100)
+        .roundToDouble();
   }
 
   double get npmPercentageUsed {
     // percentage used by npm compared to total size used
-    if (totalSizeUsedInGb == 0) return 0;
-    return ((totalNpmCacheSizeInGb / totalSizeUsedInGb) * 100).roundToDouble();
+    if (totalCacheSizeUsedInGb == 0) return 0;
+    return ((totalNpmCacheSizeInGb / totalCacheSizeUsedInGb) * 100)
+        .roundToDouble();
   }
 
   double get totalProjectSizeInBytes => projectCollection.projects.fold(
@@ -216,6 +219,11 @@ class HomePageState {
 
   String shortenPath(String path) {
     return path.replaceFirst(projectsPath, '');
+  }
+
+  String toFormattedTotalSizeString() {
+    final totalSizeInBytes = totalCacheSizeInBytes + totalProjectSizeInBytes;
+    return toFormattedString(totalSizeInBytes);
   }
 }
 

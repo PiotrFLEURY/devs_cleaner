@@ -5,6 +5,7 @@ import 'package:build_buster/model/data/maven_local.dart';
 import 'package:build_buster/model/data/npm_cache.dart';
 import 'package:build_buster/model/data/pub_cache.dart';
 import 'package:build_buster/model/sources/helper_source.dart';
+import 'package:flutter/rendering.dart';
 
 class DevCacheRepository {
   DevCacheRepository({required this.helperSource});
@@ -61,5 +62,13 @@ class DevCacheRepository {
 
   Future<bool> deleteDockerCache() {
     return helperSource.deleteDockerCache();
+  }
+
+  Future<void> onShutdown() async {
+    try {
+      await helperSource.onShutdown();
+    } catch (_) {
+      debugPrint('Error during shutdown ignored.');
+    }
   }
 }
