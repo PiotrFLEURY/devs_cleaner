@@ -64,20 +64,19 @@ jobs:
       - name: Prepare run scripts Windows
         if: ${{ matrix.os == 'windows-latest' }}
         run: |
-          mkdir -p scripts/bin
-          copy devs_cleaner\target\release\devs_cleaner.exe scripts\bin\devs_cleaner.exe
-          copy build_buster\build\windows\x64\runner\Release\build_buster.exe scripts\bin\build_buster.exe
-          
+          mkdir -p bin
+          copy devs_cleaner\target\release\startup.exe bin\startup.exe
+          copy build_buster\build\windows\x64\runner\Release\build_buster.exe bin\build_buster.exe
 
       - name: Prepare run scripts Ubuntu and MacOS
         if: ${{ matrix.os == 'macos-latest' || matrix.os == 'ubuntu-latest' }}
         run: |
-          mkdir -p scripts/bin
-          cp devs_cleaner/target/release/devs_cleaner scripts/bin/devs_cleaner
+          mkdir bin
+          cp devs_cleaner/target/release/startup bin/startup
           if [ "${{ matrix.os }}" == "macos-latest" ]; then
-            cp -r build_buster/build/macos/Build/Products/Release/build_buster.app scripts/bin/build_buster.app
+            cp -r build_buster/build/macos/Build/Products/Release/build_buster.app bin/build_buster.app
           elif [ "${{ matrix.os }}" == "ubuntu-latest" ]; then
-            cp -r build_buster/build/linux/x64/release/bundle/build_buster scripts/bin/build_buster
+            cp -r build_buster/build/linux/x64/release/bundle/build_buster bin/build_buster
           fi
 
       - name: Archive and upload artifacts
@@ -85,7 +84,6 @@ jobs:
         with:
           name: build_buster-${{ matrix.os }}
           path: |
-            scripts/bin/devs_cleaner
-            scripts/bin/build_buster*
-            scripts/run-*.sh
+            bin/startup
+            bin/build_buster*
             
