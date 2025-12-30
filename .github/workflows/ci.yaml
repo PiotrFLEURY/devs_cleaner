@@ -61,14 +61,21 @@ jobs:
         if: ${{ matrix.os == 'ubuntu-latest' }}
         run: flutter build linux --release
 
-      - name: Prepare run scripts
+      - name: Prepare run scripts Windows
+        if: ${{ matrix.os == 'windows-latest' }}
+        run: |
+          mkdir -p scripts/bin
+          copy devs_cleaner\target\release\devs_cleaner scripts\bin\devs_cleaner
+          copy build_buster\build\windows\x64\runner\Release\build_buster.exe scripts\bin\build_buster.exe
+          
+
+      - name: Prepare run scripts Ubuntu and MacOS
+        if: ${{ matrix.os == 'macos-latest' || matrix.os == 'ubuntu-latest' }}
         run: |
           mkdir -p scripts/bin
           cp devs_cleaner/target/release/devs_cleaner scripts/bin/devs_cleaner
           if [ "${{ matrix.os }}" == "macos-latest" ]; then
             cp -r build_buster/build/macos/Build/Products/Release/build_buster.app scripts/bin/build_buster.app
-          elif [ "${{ matrix.os }}" == "windows-latest" ]; then
-            cp -r build_buster/build/windows/runner/Release/build_buster.exe scripts/bin/build_buster.exe
           elif [ "${{ matrix.os }}" == "ubuntu-latest" ]; then
             cp -r build_buster/build/linux/x64/release/bundle/build_buster scripts/bin/build_buster
           fi
