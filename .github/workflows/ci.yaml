@@ -66,9 +66,9 @@ jobs:
           mkdir -p scripts/bin
           cp devs_cleaner/target/release/devs_cleaner scripts/bin/devs_cleaner
           if [ "${{ matrix.os }}" == "macos-latest" ]; then
-            cp build_buster/build/macos/Build/Products/Release/build_buster.app scripts/bin/build_buster.app
+            cp -r build_buster/build/macos/Build/Products/Release/build_buster.app scripts/bin/build_buster.app
           elif [ "${{ matrix.os }}" == "windows-latest" ]; then
-            cp build_buster/build/windows/runner/Release/build_buster.exe scripts/bin/build_buster.exe
+            cp -r build_buster/build/windows/runner/Release/build_buster.exe scripts/bin/build_buster.exe
           elif [ "${{ matrix.os }}" == "ubuntu-latest" ]; then
             cp -r build_buster/build/linux/x64/release/bundle/build_buster scripts/bin/build_buster
           fi
