@@ -2,14 +2,34 @@
 
 A toolbox to free disk space for developpers
 
-## Features
+## UI - (Build Buster)
 
-### Scan
+![Ui screen](build_buster/docs/screen.png)
 
-Run `devs_cleaner` command to scan a directory containing your projects.
+Build Buster is a UI utility focusing on developpers tools disk usage.
 
-Technologies are detected and a cleanup is proposed for each of them.
+See, scan, clean, and voilà !
 
-### Cache cleanup
+### Caches
 
-Run `clean_cache` in order to cleanup your caches like `Docker` `Flutter/Dart pub`.
+Quickly find disk space usage of each common tools used.
+
+* Docker (images, containers, volumes, networks)
+
+* Maven local repository
+
+* Gradle caches
+
+* Pub cache
+
+* Npm cache
+
+### Projects
+
+Scan any folder containing your dev projects to get a full report of each detected projets and its disk usage
+
+## Server - (Devs cleaner)
+
+The UI utility requires a helper backend to work.
+
+This backend is a simple Rest API built with Rust charged to perform scans and cleanups.
