@@ -70,7 +70,7 @@ jobs:
           elif [ "${{ matrix.os }}" == "windows-latest" ]; then
             cp build_buster/build/windows/runner/Release/build_buster.exe scripts/bin/build_buster.exe
           elif [ "${{ matrix.os }}" == "ubuntu-latest" ]; then
-            cp -r build/linux/x64/release/bundle/build_buster scripts/bin/build_buster
+            cp -r build_buster/build/linux/x64/release/bundle/build_buster scripts/bin/build_buster
           fi
 
       - name: Archive and upload artifacts
