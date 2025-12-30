@@ -65,7 +65,7 @@ jobs:
         if: ${{ matrix.os == 'windows-latest' }}
         run: |
           mkdir -p scripts/bin
-          copy devs_cleaner\target\release\devs_cleaner scripts\bin\devs_cleaner
+          copy devs_cleaner\target\release\devs_cleaner.exe scripts\bin\devs_cleaner.exe
           copy build_buster\build\windows\x64\runner\Release\build_buster.exe scripts\bin\build_buster.exe
           
 
