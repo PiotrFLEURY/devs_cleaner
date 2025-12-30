@@ -60,4 +60,25 @@ jobs:
         working-directory: ./build_buster
         if: ${{ matrix.os == 'ubuntu-latest' }}
         run: flutter build linux --release
-      
+
+      - name: Prepare run scripts
+        run: |
+          mkdir -p scripts/bin
+          cp devs_cleaner/target/release/devs_cleaner scripts/bin/devs_cleaner
+          if [ "${{ matrix.os }}" == "macos-latest" ]; then
+            cp build_buster/build/macos/Build/Products/Release/build_buster.app scripts/bin/build_buster.app
+          elif [ "${{ matrix.os }}" == "windows-latest" ]; then
+            cp build_buster/build/windows/runner/Release/build_buster.exe scripts/bin/build_buster.exe
+          elif [ "${{ matrix.os }}" == "ubuntu-latest" ]; then
+            cp -r build/linux/x64/release/bundle/build_buster scripts/bin/build_buster
+          fi
+
+      - name: Archive and upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: build_buster-${{ matrix.os }}
+          path: |
+            scripts/bin/devs_cleaner
+            scripts/bin/build_buster*
+            scripts/run-*.sh
+            
