@@ -73,14 +73,14 @@ jobs:
         if: ${{ matrix.os == 'windows-latest' }}
         run: |
           mkdir -p bin
-          copy devs_cleaner\target\release\startup.exe bin\startup.exe
+          copy devs_cleaner\target\release\devs_cleaner.exe bin\devs_cleaner.exe
           copy build_buster\build\windows\x64\runner\Release\build_buster.exe bin\build_buster.exe
 
       - name: Prepare run scripts Ubuntu and MacOS
         if: ${{ matrix.os == 'macos-latest' || matrix.os == 'ubuntu-latest' }}
         run: |
           mkdir bin
-          cp devs_cleaner/target/release/startup bin/startup
+          cp devs_cleaner/target/release/devs_cleaner bin/devs_cleaner
           if [ "${{ matrix.os }}" == "macos-latest" ]; then
             cp -r build_buster/build/macos/Build/Products/Release/build_buster.app bin/build_buster.app
           elif [ "${{ matrix.os }}" == "ubuntu-latest" ]; then
