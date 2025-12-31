@@ -8,10 +8,10 @@ pub use std::collections::HashMap;
 pub use crate::{cleanup::CleanupProjects, models::Technology};
 
 pub async fn start_server() {
-    println!("Starting Devs Cleaner server on http://0.0.0.0:3000");
+    println!("Starting Devs Cleaner server on http://127.0.0.1:3000");
     let router = server::create_router();
 
-    let listener = tokio::net::TcpListener::bind("0.0.0.0:3000")
+    let listener = tokio::net::TcpListener::bind("127.0.0.1:3000")
         .await
         .expect("Unable to bind port");
     axum::serve(listener, router)
