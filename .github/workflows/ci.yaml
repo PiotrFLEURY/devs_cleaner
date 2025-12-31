@@ -46,13 +46,13 @@ jobs:
         working-directory: ./devs_cleaner
         run: cargo build --release
 
-      - name: Copy release backend bin to build_buster assets folder
-        run: |
-          if [ "${{ matrix.os }}" == "windows-latest" ]; then
-            copy devs_cleaner\target\release\devs_cleaner.exe build_buster\assets\devs_cleaner.exe
-          else
-            cp devs_cleaner/target/release/devs_cleaner build_buster/assets/devs_cleaner
-          fi
+      - name: Copy release backend bin to build_buster assets folder (Windows)
+        if: ${{ matrix.os == 'windows-latest' }}
+        run: copy devs_cleaner\target\release\devs_cleaner.exe build_buster\assets\devs_cleaner.exe
+
+      - name: Copy release backend bin to build_buster assets folder (Linux and MacOS)
+        if: ${{ matrix.os == 'ubuntu-latest' || matrix.os == 'macos-latest' }}
+        run: cp devs_cleaner/target/release/devs_cleaner build_buster/assets/devs_cleaner
 
       - name: Build Flutter macos app
         working-directory: ./build_buster
