@@ -45,55 +45,51 @@ class Projects extends ConsumerWidget {
           ],
         ),
         // Placeholder for project list
-        Expanded(
-          child: SingleChildScrollView(
-            child: Table(
-              border: TableBorder.all(color: AppTheme.border),
+        Table(
+          border: TableBorder.all(color: AppTheme.border),
+          children: [
+            TableRow(
+              decoration: BoxDecoration(color: AppTheme.sideBar),
               children: [
-                TableRow(
-                  decoration: BoxDecoration(color: AppTheme.sideBar),
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        'Project Path',
-                        style: TextStyle(
-                          color: AppTheme.mainText,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 12,
-                        ),
-                      ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    'Project Path',
+                    style: TextStyle(
+                      color: AppTheme.mainText,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 12,
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        'Technology',
-                        style: TextStyle(
-                          color: AppTheme.mainText,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 12,
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        'Size',
-                        style: TextStyle(
-                          color: AppTheme.mainText,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 12,
-                        ),
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
-                ...viewModel.sortedDevProjects.map((project) {
-                  return _buildProjectRow(viewModel, project, ref);
-                }),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    'Technology',
+                    style: TextStyle(
+                      color: AppTheme.mainText,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 12,
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    'Size',
+                    style: TextStyle(
+                      color: AppTheme.mainText,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 12,
+                    ),
+                  ),
+                ),
               ],
             ),
-          ),
+            ...viewModel.sortedDevProjects.map((project) {
+              return _buildProjectRow(viewModel, project, ref);
+            }),
+          ],
         ),
         Row(
           spacing: 16.0,

@@ -27,44 +27,48 @@ class _ScanResultsState extends ConsumerState<ScanResults> {
     final navigationItem = ref.watch(navigationProvider);
     final homePageState = ref.watch(homePageViewModelProvider);
     return Container(
+      width: double.infinity,
+      height: double.infinity,
       color: AppTheme.mainBackground,
       padding: const EdgeInsets.all(24.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        spacing: 32.0,
-        children: [
-          if (navigationItem == NavigationItem.dashboard)
-            Center(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                    homePageState.toFormattedTotalSizeString(),
-                    style: TextStyle(
-                      color: AppTheme.mainText,
-                      fontSize: 36,
-                      fontWeight: FontWeight.bold,
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          spacing: 32.0,
+          children: [
+            if (navigationItem == NavigationItem.dashboard)
+              Center(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      homePageState.toFormattedTotalSizeString(),
+                      style: TextStyle(
+                        color: AppTheme.mainText,
+                        fontSize: 36,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                  Text(
-                    'Total size used by caches and projects',
-                    style: TextStyle(
-                      color: AppTheme.secondaryText,
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
+                    Text(
+                      'Total size used by caches and projects',
+                      style: TextStyle(
+                        color: AppTheme.secondaryText,
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
 
-          if (navigationItem == NavigationItem.caches ||
-              navigationItem == NavigationItem.dashboard)
-            Caches(),
-          if (navigationItem == NavigationItem.projects ||
-              navigationItem == NavigationItem.dashboard)
-            Expanded(child: Projects()),
-        ],
+            if (navigationItem == NavigationItem.caches ||
+                navigationItem == NavigationItem.dashboard)
+              Caches(),
+            if (navigationItem == NavigationItem.projects ||
+                navigationItem == NavigationItem.dashboard)
+              Projects(),
+          ],
+        ),
       ),
     );
   }
