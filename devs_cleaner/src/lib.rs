@@ -18,25 +18,3 @@ pub async fn start_server() {
         .await
         .expect("Expecting server started");
 }
-
-pub fn start_ui() {
-    // Start process to launch Flutter UI
-    let platform = if cfg!(target_os = "windows") {
-        "windows"
-    } else if cfg!(target_os = "macos") {
-        "macos"
-    } else {
-        "linux"
-    };
-    let startup_command = match platform {
-        "windows" => "start \"\" \".\\build_buster.exe\"",
-        "macos" => "open -n ./build_buster.app &",
-        "linux" => "./build_buster &",
-        _ => "flutter run",
-    };
-    std::process::Command::new("sh")
-        .arg("-c")
-        .arg(startup_command)
-        .spawn()
-        .expect("Failed to start Flutter UI");
-}
