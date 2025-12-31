@@ -33,3 +33,26 @@ Scan any folder containing your dev projects to get a full report of each detect
 The UI utility requires a helper backend to work.
 
 This backend is a simple Rest API built with Rust charged to perform scans and cleanups.
+
+## Getting started with code
+
+**Requirements**
+
+- Rust - see [rust-lang.org](https://rust-lang.org/fr/tools/install/) to install Rust on your machine
+
+- Flutter - see [flutter.dev](https://docs.flutter.dev/get-started/quick) to install Flutter on your machine
+
+1. [Run the Rust server](#run-the-rust-server)
+2. [Start the Flutter app](#start-the-flutter-app)
+
+### Run the Rust Server
+
+1. Open the [devs_cleaner](devs_cleaner) project with your IDE (recommending VsCode)
+
+2. Run the server using `cargo run` command
+
+### Start the Flutter app
+
+1. Open the [build_buster](build_buster) project with your IDE (recommending VsCode)
+
+2. Run the UI using `flutter run` command
