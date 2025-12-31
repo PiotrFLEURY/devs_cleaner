@@ -57,17 +57,17 @@ jobs:
       - name: Build Flutter macos app
         working-directory: ./build_buster
         if: ${{ matrix.os == 'macos-latest' }}
-        run: flutter build macos --release
+        run: flutter build macos --release --dart-define=START_SERVER=true
 
       - name: Build Flutter windows app
         working-directory: ./build_buster
         if: ${{ matrix.os == 'windows-latest' }}
-        run: flutter build windows --release
+        run: flutter build windows --release --dart-define=START_SERVER=true
 
       - name: Build Flutter linux app
         working-directory: ./build_buster
         if: ${{ matrix.os == 'ubuntu-latest' }}
-        run: flutter build linux --release
+        run: flutter build linux --release --dart-define=START_SERVER=true
 
       - name: Prepare run scripts Windows
         if: ${{ matrix.os == 'windows-latest' }}

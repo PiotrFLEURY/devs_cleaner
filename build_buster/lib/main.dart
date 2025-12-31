@@ -41,9 +41,14 @@ Future<void> startServer() async {
   await Process.start(serverPath, [], mode: ProcessStartMode.inheritStdio);
 }
 
+bool get shouldStartServer {
+  const startServer = bool.fromEnvironment('START_SERVER', defaultValue: false);
+  return startServer;
+}
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  if (!kDebugMode) {
+  if (shouldStartServer) {
     await startServer();
   }
   runApp(
