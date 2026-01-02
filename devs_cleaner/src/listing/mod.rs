@@ -13,17 +13,17 @@ pub fn list_projects(path_str: &str) -> ProjectCollection {
         match result {
             Ok(entry) => {
                 let entry = entry;
-                println!(
-                    "Visiting: {} of size {}",
-                    entry.path().display(),
-                    entry.metadata().map(|m| m.len()).unwrap_or(0)
-                );
+                //println!(
+                //     "Visiting: {} of size {}",
+                //     entry.path().display(),
+                //     entry.metadata().map(|m| m.len()).unwrap_or(0)
+                // );
                 if (entry.path().to_string_lossy().contains(".git")
                     || entry.path().to_string_lossy().contains("node_modules"))
                     && entry.file_type().is_dir()
                 {
                     // Skip .git and node_modules directories
-                    println!("Skipping directory: {}", entry.path().display());
+                    //println!("Skipping directory: {}", entry.path().display());
                     continue;
                 }
                 if let Some(dev_project) = to_project(&entry) {
@@ -169,7 +169,7 @@ pub fn maven_cache() -> MavenCache {
         .map(|path| path.to_string_lossy().to_string())
         .unwrap_or_else(|| "Maven cache not found".to_string());
 
-    println!("Calculating Maven cache size at {}", maven_cache_path);
+    //println!("Calculating Maven cache size at {}", &maven_cache_path);
 
     let mut total_size_in_bytes: u64 = 0;
 
@@ -177,11 +177,11 @@ pub fn maven_cache() -> MavenCache {
         match result {
             Ok(entry) => {
                 let entry = entry;
-                println!(
-                    "Visiting: {} of size {}",
-                    entry.path().display(),
-                    entry.metadata().map(|m| m.len()).unwrap_or(0)
-                );
+                //println!(
+                //     "Visiting: {} of size {}",
+                //     entry.path().display(),
+                //     entry.metadata().map(|m| m.len()).unwrap_or(0)
+                // );
                 if let Ok(metadata) = entry.metadata() {
                     if metadata.is_file() {
                         total_size_in_bytes += metadata.len();
@@ -207,7 +207,7 @@ pub fn gradle_cache() -> GradleCache {
         .map(|path| path.to_string_lossy().to_string())
         .unwrap_or_else(|| "Gradle cache not found".to_string());
 
-    println!("Calculating Gradle cache size at {}", gradle_cache_path);
+    //println!("Calculating Gradle cache size at {}", gradle_cache_path);
 
     let mut total_size_in_bytes: u64 = 0;
 
@@ -215,11 +215,11 @@ pub fn gradle_cache() -> GradleCache {
         match result {
             Ok(entry) => {
                 let entry = entry;
-                println!(
-                    "Visiting: {} of size {}",
-                    entry.path().display(),
-                    entry.metadata().map(|m| m.len()).unwrap_or(0)
-                );
+                //println!(
+                //     "Visiting: {} of size {}",
+                //     entry.path().display(),
+                //     entry.metadata().map(|m| m.len()).unwrap_or(0)
+                // );
                 if let Ok(metadata) = entry.metadata() {
                     if metadata.is_file() {
                         total_size_in_bytes += metadata.len();
@@ -245,7 +245,7 @@ pub fn pub_cache() -> PubCache {
         .map(|path| path.to_string_lossy().to_string())
         .unwrap_or_else(|| "Pub cache not found".to_string());
 
-    println!("Calculating Pub cache size at {}", pub_cache_path);
+    //println!("Calculating Pub cache size at {}", &pub_cache_path);
 
     let mut total_size_in_bytes: u64 = 0;
 
@@ -253,11 +253,11 @@ pub fn pub_cache() -> PubCache {
         match result {
             Ok(entry) => {
                 let entry = entry;
-                println!(
-                    "Visiting: {} of size {}",
-                    entry.path().display(),
-                    entry.metadata().map(|m| m.len()).unwrap_or(0)
-                );
+                //println!(
+                //    "Visiting: {} of size {}",
+                //    entry.path().display(),
+                //    entry.metadata().map(|m| m.len()).unwrap_or(0)
+                //);
                 if let Ok(metadata) = entry.metadata() {
                     if metadata.is_file() {
                         total_size_in_bytes += metadata.len();
@@ -307,11 +307,11 @@ fn run_clean_command(path: &str, command: &str, args: &[&str]) {
     match output {
         Ok(output) => {
             if output.status.success() {
-                println!(
-                    "Successfully ran clean command in {}: {}",
-                    path,
-                    String::from_utf8_lossy(&output.stdout)
-                );
+                //println!(
+                //     "Successfully ran clean command in {}: {}",
+                //     path,
+                //     String::from_utf8_lossy(&output.stdout)
+                // );
             } else {
                 eprintln!(
                     "Failed to run clean command in {}: {}",
@@ -342,10 +342,10 @@ pub fn delete_project_build_artifacts(path: &str) -> bool {
         if build_artifact_path.exists() {
             match std::fs::remove_dir_all(&build_artifact_path) {
                 Ok(_) => {
-                    println!(
-                        "Successfully deleted build artifacts at {}",
-                        build_artifact_path.display()
-                    );
+                    //println!(
+                    //     "Successfully deleted build artifacts at {}",
+                    //     build_artifact_path.display()
+                    // );
                     return true;
                 }
                 Err(e) => {
@@ -358,14 +358,14 @@ pub fn delete_project_build_artifacts(path: &str) -> bool {
                 }
             }
         } else {
-            println!(
-                "No build artifacts found at {}",
-                build_artifact_path.display()
-            );
+            //println!(
+            //     "No build artifacts found at {}",
+            //     build_artifact_path.display()
+            // );
             return true;
         }
     } else {
-        println!("Technology could not be identified for path: {}", path);
+        //println!("Technology could not be identified for path: {}", path);
         return false;
     }
 }
@@ -378,7 +378,7 @@ pub fn delete_maven_cache() -> bool {
     if let Some(path) = maven_cache_path {
         match std::fs::remove_dir_all(&path) {
             Ok(_) => {
-                println!("Successfully deleted Maven cache at {}", path.display());
+                //println!("Successfully deleted Maven cache at {}", path.display());
                 true
             }
             Err(e) => {
@@ -387,7 +387,7 @@ pub fn delete_maven_cache() -> bool {
             }
         }
     } else {
-        println!("Maven cache not found.");
+        //println!("Maven cache not found.");
         false
     }
 }
@@ -400,7 +400,7 @@ pub fn delete_gradle_cache() -> bool {
     if let Some(path) = gradle_cache_path {
         match std::fs::remove_dir_all(&path) {
             Ok(_) => {
-                println!("Successfully deleted Gradle cache at {}", path.display());
+                //println!("Successfully deleted Gradle cache at {}", path.display());
                 true
             }
             Err(e) => {
@@ -409,7 +409,7 @@ pub fn delete_gradle_cache() -> bool {
             }
         }
     } else {
-        println!("Gradle cache not found.");
+        //println!("Gradle cache not found.");
         false
     }
 }
@@ -422,7 +422,7 @@ pub fn delete_pub_cache() -> bool {
     if let Some(path) = pub_cache_path {
         match std::fs::remove_dir_all(&path) {
             Ok(_) => {
-                println!("Successfully deleted Pub cache at {}", path.display());
+                //println!("Successfully deleted Pub cache at {}", path.display());
                 true
             }
             Err(e) => {
@@ -431,7 +431,7 @@ pub fn delete_pub_cache() -> bool {
             }
         }
     } else {
-        println!("Pub cache not found.");
+        //println!("Pub cache not found.");
         false
     }
 }
@@ -447,7 +447,7 @@ pub fn delete_docker_cache() -> bool {
     match output {
         Ok(output) => {
             if output.status.success() {
-                println!("Successfully deleted Docker cache.");
+                //println!("Successfully deleted Docker cache.");
                 true
             } else {
                 eprintln!(
@@ -484,7 +484,7 @@ pub fn npm_cache() -> NpmCache {
         .map(|path| path.to_string_lossy().to_string())
         .unwrap_or_else(|| "NPM cache not found".to_string());
 
-    println!("Calculating NPM cache size at {}", npm_cache_path);
+    //println!("Calculating NPM cache size at {}", &npm_cache_path);
 
     let mut total_size_in_bytes: u64 = 0;
 
@@ -492,11 +492,11 @@ pub fn npm_cache() -> NpmCache {
         match result {
             Ok(entry) => {
                 let entry = entry;
-                println!(
-                    "Visiting: {} of size {}",
-                    entry.path().display(),
-                    entry.metadata().map(|m| m.len()).unwrap_or(0)
-                );
+                //println!(
+                //     "Visiting: {} of size {}",
+                //     entry.path().display(),
+                //     entry.metadata().map(|m| m.len()).unwrap_or(0)
+                // );
                 if let Ok(metadata) = entry.metadata() {
                     if metadata.is_file() {
                         total_size_in_bytes += metadata.len();
@@ -525,7 +525,7 @@ pub fn delete_npm_cache() -> bool {
     match output {
         Ok(output) => {
             if output.status.success() {
-                println!("Successfully deleted NPM cache.");
+                //println!("Successfully deleted NPM cache.");
                 true
             } else {
                 eprintln!(

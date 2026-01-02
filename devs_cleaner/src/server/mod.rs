@@ -27,6 +27,7 @@ pub fn create_router() -> Router {
         .route("/projects", delete(delete_project_build))
         .route("/projects/all", delete(delete_all_projects_build))
         .route("/shutdown", get(shutdown_server))
+        .route("/health", get(|| async { "OK" }))
         .fallback(get(|| async { "Not Found" }))
 }
 

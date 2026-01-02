@@ -65,10 +65,21 @@ class DevCacheRepository {
   }
 
   Future<void> onShutdown() async {
+    debugPrint('Shutting down DevCacheRepository...');
     try {
       await helperSource.onShutdown();
     } catch (_) {
       debugPrint('Error during shutdown ignored.');
+    }
+  }
+
+  Future<bool> isBackendRunning() async {
+    try {
+      await helperSource.health();
+      return true;
+    } catch (e) {
+      debugPrint('Backend health check failed: $e');
+      return false;
     }
   }
 }

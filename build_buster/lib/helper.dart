@@ -21,6 +21,10 @@ String get serverPath {
 }
 
 Future<void> startServer() async {
+  await launchBackend(serverPath);
+}
+
+Future<void> installServer() async {
   final server = await rootBundle.load('assets/devs_cleaner');
   final bytes = server.buffer.asUint8List();
 
@@ -35,8 +39,6 @@ Future<void> startServer() async {
 
   await File(serverPath).writeAsBytes(bytes, flush: true);
   await Process.run('chmod', ['+x', serverPath]);
-
-  await launchBackend(serverPath);
 }
 
 Future<Process?> launchBackend(String backendPath) async {
@@ -59,9 +61,9 @@ Future<Process?> launchBackend(String backendPath) async {
     }
 
     // Capture des logs pour le debug (essentiel pour les devs)
-    process.stdout
-        .transform(utf8.decoder)
-        .listen((data) => debugPrint('BACKEND: $data'));
+    // process.stdout
+    //     .transform(utf8.decoder)
+    //     .listen((data) => debugPrint('BACKEND: $data'));
     process.stderr
         .transform(utf8.decoder)
         .listen((data) => debugPrint('BACKEND ERROR: $data'));

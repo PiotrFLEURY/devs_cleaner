@@ -54,4 +54,7 @@ abstract class HelperSource {
 
   @GET('/shutdown')
   Future<void> onShutdown();
+
+  @GET('/health')
+  Future<String> health();
 }
