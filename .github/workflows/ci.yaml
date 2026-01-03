@@ -1,6 +1,11 @@
+name: CI Build
 on:
   push:
   pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build-release:
@@ -92,4 +97,4 @@ jobs:
         with:
           name: build_buster-${{ matrix.os }}
           path: bin/build_buster*
-            
+
