@@ -47,5 +47,5 @@ jobs:
           VERSION=${{ github.event.inputs.version }}
           echo "Publishing release for $VERSION"
           gh release create "v$VERSION" --title "v$VERSION" --generate-notes
-    
-      
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
