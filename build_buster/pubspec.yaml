@@ -1,4 +1,4 @@
-name: build_buster 
+name: build_buster
 description: "A disk cleanup tool for developers built with Flutter."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
@@ -42,6 +42,7 @@ dependencies:
   retrofit: 4.9.0
   dio: ^5.9.0
   file_picker: ^10.3.8
+  package_info_plus: ^9.0.0
 
 dev_dependencies:
   flutter_test:
@@ -74,6 +75,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/
+    - assets/icon/
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 
