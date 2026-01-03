@@ -51,6 +51,4 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
     
       - name: Call CI workflow
-        uses: ./.github/workflows/ci.yaml
-        with:
-          ref: 'refs/heads/main'
+        uses: PiotrFLEURY/devs_cleaner/.github/workflows/ci.yaml@main
