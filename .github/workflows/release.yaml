@@ -20,15 +20,22 @@ jobs:
         with:
           channel: 'stable'
 
+      - name: Fetch current build number
+        id: get_build_number
+        run: |
+          BUILD_NUMBER=$(grep '^version:' build_buster/pubspec.yaml | sed 's/.*+\([0-9]*\)/\1/')
+          echo "Current build number is $BUILD_NUMBER"
+          echo "build_number=$BUILD_NUMBER" >> $GITHUB_OUTPUT
+
       - name: Bump version
         id: bump_version
         run: |
           VERSION=${{ github.event.inputs.version }}
+          BUILD_NUMBER=${{ steps.get_build_number.outputs.build_number }}
           echo "Bumping version to $VERSION"
 
           # Update pubspec.yaml
-          sed -i "s/^version: .*/version: $VERSION+1/" build_buster/pubspec.yaml
-
+          sed -i "s/^version: .*/version: $VERSION+$((BUILD_NUMBER + 1))/" build_buster/pubspec.yaml
           # Update cargo.toml
           sed -i "s/^version = .*/version = \"$VERSION\"/" devs_cleaner/Cargo.toml
 
@@ -36,6 +43,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add build_buster/pubspec.yaml
+          git add devs_cleaner/Cargo.toml
           git commit -m "Bump version to $VERSION"
           git push
 
