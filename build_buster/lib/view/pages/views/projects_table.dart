@@ -179,14 +179,11 @@ class Projects extends ConsumerWidget {
   }
 
   Future<void> _scanProjects(WidgetRef ref) async {
-    List<String>? result = await FilePicker.platform.pickFileAndDirectoryPaths(
-      type: FileType.custom,
-      allowedExtensions: [''],
-    );
-    if (result == null || result.length != 1 || _hasExtention(result[0])) {
+    String? result = await FilePicker.platform.getDirectoryPath();
+    if (result == null) {
       return; // User canceled the picker
     }
-    ref.read(homePageViewModelProvider.notifier).fetchProjects(result[0]);
+    ref.read(homePageViewModelProvider.notifier).fetchProjects(result);
   }
 
   bool _hasExtention(String path) {
