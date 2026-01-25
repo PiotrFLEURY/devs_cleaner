@@ -186,10 +186,6 @@ class Projects extends ConsumerWidget {
     ref.read(homePageViewModelProvider.notifier).fetchProjects(result);
   }
 
-  bool _hasExtention(String path) {
-    return path.split('/').last.contains('.');
-  }
-
   void confirmProjectCleanup(
     BuildContext context,
     String projectPath,
