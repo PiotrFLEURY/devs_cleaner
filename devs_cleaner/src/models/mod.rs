@@ -38,6 +38,12 @@ pub struct ProjectCollection {
     pub projects: Vec<DevProject>,
 }
 
+impl Default for ProjectCollection {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl ProjectCollection {
     pub fn new() -> Self {
         ProjectCollection {
@@ -51,6 +57,10 @@ impl ProjectCollection {
 
     pub fn len(&self) -> usize {
         self.projects.len()
+    }
+
+    pub fn is_empty(&self) -> bool {
+        self.projects.is_empty()
     }
 
     pub fn list_distinct_technologies(&self) -> Vec<&Technology> {

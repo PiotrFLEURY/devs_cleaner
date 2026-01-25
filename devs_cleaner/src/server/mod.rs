@@ -95,7 +95,7 @@ pub async fn delete_project_build(Query(params): Query<HashMap<String, String>>)
         Some(p) => p,
         None => return Json(false),
     };
-    let result = listing::delete_project_build_artifacts(&path);
+    let result = listing::delete_project_build_artifacts(path);
     Json(result)
 }
 
@@ -106,7 +106,7 @@ pub async fn delete_all_projects_build(
         Some(p) => p,
         None => return Json(false),
     };
-    let result = listing::delete_all_projects_build_artifacts(&path);
+    let result = listing::delete_all_projects_build_artifacts(path);
     Json(result)
 }
 

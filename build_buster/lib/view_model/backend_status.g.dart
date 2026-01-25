@@ -41,7 +41,7 @@ final class BackendStatusProvider
   }
 }
 
-String _$backendStatusHash() => r'9218cc9dbe8b3a07ad32a78fa945ba41d26510fb';
+String _$backendStatusHash() => r'6ff49413f053fdd5443a8f560ef8a0a7f3bf6757';
 
 abstract class _$BackendStatus extends $Notifier<BackendStatusState> {
   BackendStatusState build();
