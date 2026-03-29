@@ -155,29 +155,34 @@ pub fn maven_cache() -> MavenCache {
     let maven_cache_path = home_dir()
         .map(|home| home.join(".m2").join("repository"))
         .filter(|path| path.exists())
-        .map(|path| path.to_string_lossy().to_string())
-        .unwrap_or_else(|| "Maven cache not found".to_string());
+        .map(|path| path.to_string_lossy().to_string());
 
     let mut total_size_in_bytes: u64 = 0;
 
-    for result in WalkDir::new(&maven_cache_path) {
-        match result {
-            Ok(entry) => {
-                if let Ok(metadata) = entry.metadata()
-                    && metadata.is_file()
-                {
-                    total_size_in_bytes += metadata.len();
+    if let Some(path) = &maven_cache_path {
+        for result in WalkDir::new(path) {
+            match result {
+                Ok(entry) => {
+                    if let Ok(metadata) = entry.metadata()
+                        && metadata.is_file()
+                    {
+                        total_size_in_bytes += metadata.len();
+                    }
+                }
+                Err(e) => {
+                    eprintln!("Error reading entry: {}", e);
                 }
             }
-            Err(e) => {
-                eprintln!("Error reading entry: {}", e);
-            }
         }
-    }
-
-    MavenCache {
-        path: maven_cache_path,
-        total_size_in_bytes,
+        MavenCache {
+            path: path.clone(),
+            total_size_in_bytes,
+        }
+    } else {
+        MavenCache {
+            path: "Maven cache not found".to_string(),
+            total_size_in_bytes: 0,
+        }
     }
 }
 
@@ -185,29 +190,35 @@ pub fn gradle_cache() -> GradleCache {
     let gradle_cache_path = home_dir()
         .map(|home| home.join(".gradle").join("caches"))
         .filter(|path| path.exists())
-        .map(|path| path.to_string_lossy().to_string())
-        .unwrap_or_else(|| "Gradle cache not found".to_string());
+        .map(|path| path.to_string_lossy().to_string());
 
     let mut total_size_in_bytes: u64 = 0;
 
-    for result in WalkDir::new(&gradle_cache_path) {
-        match result {
-            Ok(entry) => {
-                if let Ok(metadata) = entry.metadata()
-                    && metadata.is_file()
-                {
-                    total_size_in_bytes += metadata.len();
+    if let Some(path) = &gradle_cache_path {
+        for result in WalkDir::new(path) {
+            match result {
+                Ok(entry) => {
+                    if let Ok(metadata) = entry.metadata()
+                        && metadata.is_file()
+                    {
+                        total_size_in_bytes += metadata.len();
+                    }
+                }
+                Err(e) => {
+                    eprintln!("Error reading entry: {}", e);
                 }
             }
-            Err(e) => {
-                eprintln!("Error reading entry: {}", e);
-            }
         }
-    }
 
-    GradleCache {
-        path: gradle_cache_path,
-        total_size_in_bytes,
+        GradleCache {
+            path: path.clone(),
+            total_size_in_bytes,
+        }
+    } else {
+        GradleCache {
+            path: "Gradle cache not found".to_string(),
+            total_size_in_bytes: 0,
+        }
     }
 }
 
@@ -437,8 +448,6 @@ pub fn npm_cache() -> NpmCache {
         .filter(|path| path.exists())
         .map(|path| path.to_string_lossy().to_string())
         .unwrap_or_else(|| "NPM cache not found".to_string());
-
-    println!("Calculating NPM cache size at {}", &npm_cache_path);
 
     let mut total_size_in_bytes: u64 = 0;
 

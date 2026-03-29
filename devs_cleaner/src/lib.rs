@@ -1,4 +1,5 @@
 pub mod cleanup;
+pub mod cli;
 pub mod listing;
 pub mod models;
 pub mod server;
